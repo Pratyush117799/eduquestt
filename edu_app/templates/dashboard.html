@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Eduquest — Student Dashboard</title>
+
+<style>
+:root {
+  --bg: #f6f7fb;
+  --text: #0f172a;
+  --card: #ffffff;
+  --muted: #6b7280;
+  --accent-1: #6c63ff;
+  --accent-2: #9b6bff;
+  --accent-3: #7bd389;
+  --shadow: 0 10px 30px rgba(12,12,30,0.06);
+  --radius: 14px;
+}
+
+[data-theme="dark"] {
+  --bg: #0b0b14;
+  --card: #131729;
+  --text: #e2e8f0;
+  --muted: #9ca3af;
+  --shadow: 0 12px 50px rgba(0,0,0,0.65);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  transition: background 0.3s, color 0.3s;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  padding: 30px;
+}
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  color: white;
+  font-weight: 800;
+  font-size: 18px;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #b58dff, #7a3cff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+}
+
+.progress-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+.progress-bar-wrap {
+  height: 10px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+  transition: width 0.6s ease-in-out;
+}
+
+.stats {
+  display: flex;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.stat {
+  flex: 1;
+  background: var(--card);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: var(--shadow);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+}
+
+.tab {
+  padding: 8px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+  background: rgba(108, 99, 255, 0.1);
+  border: 1px solid rgba(108, 99, 255, 0.06);
+}
+
+.tab.active {
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+  color: white;
+  box-shadow: 0 8px 30px rgba(108, 99, 255, 0.12);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 18px;
+}
+
+.card {
+  background: var(--card);
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.btn-upload {
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.2s;
+}
+
+.btn-upload:hover {
+  transform: scale(1.05);
+}
+
+.status {
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 5px 10px;
+}
+
+.status.pending {
+  background: #fff4e6;
+  color: #b45f00;
+}
+
+.status.completed {
+  background: #e7f8ec;
+  color: #0b9444;
+}
+
+.small-footer {
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <div class="header">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="logo">EN</div>
+      <div>
+        
+        <h2>Student Dashboard</h2>
+        <p style="font-size:13px;color:var(--muted)">Assignments & Progress</p>
+      </div>
+    </div>
+    <div class="profile">
+      <div class="welcome" style="font-size:13px;color:var(--muted)">Welcome back,<br><strong>{{ request.user.username }}</strong></div>
+      <div class="avatar">{{ request.user.username|slice:":2"|upper }}</div>
+    </div>
+  </div>
+     <div style="text-align:right;margin:20px 0;">
+     <a href="{% url 'logout' %}" style="display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #e74c3c; color: white; text-decoration: none; border-radius: 5px;">
+            Logout
+        </a>
+    </div>
+  <div class="progress-card">
+    <h3>Overall Progress</h3>
+    <div class="progress-bar-wrap">
+      <div id="progBar" class="progress-bar"></div>
+    </div>
+    <div style="margin-top:10px;font-size:13px;color:var(--muted)">
+      <span id="progText">0 of 0 assignments completed</span>
+    </div>
+    <div class="stats">
+      <div class="stat"><div><strong id="numCompleted">0</strong><br>Completed</div></div>
+      <div class="stat"><div><strong id="numPending">0</strong><br>Pending</div></div>
+      <div class="stat"><div><strong id="numTotal">0</strong><br>Total</div></div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-filter="all">All</div>
+    <div class="tab" data-filter="pending">Pending</div>
+    <div class="tab" data-filter="completed">Completed</div>
+  </div>
+
+  <div class="grid" id="cardsGrid"></div>
+  <div class="small-footer">Tip: Press <b>T</b> to toggle Dark Mode 🌙</div>
+</div>
+
+<script>
+const assignments = [
+  {id:1, title:"React Components", course:"Web Dev", due:"2025-11-05", status:"pending"},
+  {id:2, title:"Database Project", course:"DBMS", due:"2025-11-02", status:"completed", submittedFile:"schema.pdf"},
+  {id:3, title:"Algorithm Report", course:"DSA", due:"2025-11-08", status:"pending"},
+];
+
+const byId = id => document.getElementById(id);
+
+function updateStats(){
+  const total = assignments.length;
+  const completed = assignments.filter(a=>a.status==="completed").length;
+  const pending = total - completed;
+  byId("numCompleted").textContent = completed;
+  byId("numPending").textContent = pending;
+  byId("numTotal").textContent = total;
+  const percent = total===0?0:Math.round((completed/total)*100);
+  byId("progBar").style.width = percent+"%";
+  byId("progText").textContent = `${completed} of ${total} assignments completed`;
+}
+
+function renderCards(filter="all"){
+  const grid = byId("cardsGrid");
+  grid.innerHTML = "";
+  const filtered = filter==="all"?assignments:assignments.filter(a=>a.status===filter);
+
+  if(filtered.length===0){
+    grid.innerHTML = `<div class='card'>No assignments found.</div>`;
+    return;
+  }
+
+  filtered.forEach(a=>{
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <div>
+        <h3>${a.title}</h3>
+        <p style="font-size:13px;color:var(--muted)">${a.course}</p>
+      </div>
+      <div>
+        <p style="font-size:13px;color:var(--muted)">Due: ${a.due}</p>
+        <div class="status ${a.status}">${a.status}</div>
+      </div>
+      ${a.status==="pending"
+        ? `<button class="btn-upload" data-id="${a.id}">Upload Assignment</button>`
+        : `<p style="font-size:13px;color:var(--muted)">File: <b>${a.submittedFile}</b></p>`}
+    `;
+    grid.appendChild(card);
+  });
+
+  document.querySelectorAll(".btn-upload").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = ".pdf,.doc,.docx,.zip,.txt,image/*";
+      input.onchange = e=>{
+        const file = e.target.files[0];
+        if(!file) return;
+        const id = parseInt(btn.getAttribute("data-id"));
+        const idx = assignments.findIndex(a=>a.id===id);
+        assignments[idx].status = "completed";
+        assignments[idx].submittedFile = file.name;
+        updateStats();
+        renderCards(filter);
+      };
+      input.click(); // open file picker
+    });
+  });
+}
+
+document.querySelectorAll(".tab").forEach(tab=>{
+  tab.addEventListener("click",()=>{
+    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+    tab.classList.add("active");
+    renderCards(tab.getAttribute("data-filter"));
+  });
+});
+
+window.addEventListener("keydown",(e)=>{
+  if(e.key.toLowerCase()==='t'){
+    const html=document.documentElement;
+    const dark=html.getAttribute("data-theme")==="dark";
+    html.setAttribute("data-theme",dark?"light":"dark");
+  }
+});
+
+updateStats();
+renderCards();
+</script>
+</body>
+</html>

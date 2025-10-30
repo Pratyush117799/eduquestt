@@ -1,0 +1,1239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>EduQuest — Gamified Learning</title>
+<meta name="description" content="EduQuest — Gamified learning platform. Earn XP, analytics, leaderboards. Premium animated landing page." />
+<style>
+  /* -------------------------
+     THEME VARIABLES
+     ------------------------- */
+  :root{
+    --bg-dark: #060712;
+    --bg-dark-2: #0b0f1a;
+    --panel-dark: #0f1620;
+    --muted-dark: #9aa6b6;
+    --text-dark: #eaf3ff;
+    --accent-1: #8b5cf6; /* purple */
+    --accent-2: #ff47a8; /* pink */
+    --accent-3: #37c6d3; /* cyan */
+    --glass: rgba(255,255,255,0.04);
+    --glass-strong: rgba(255,255,255,0.03);
+
+    --light-bg: #f6f8fb;
+    --light-panel: #ffffff;
+    --light-text: #0b1530;
+    --light-muted: #6b7280;
+
+    --radius: 14px;
+    --container: 1200px;
+    --nav-h:72px;
+  }
+
+  html[data-theme="dark"]{
+    --bg: linear-gradient(180deg,var(--bg-dark), var(--bg-dark-2));
+    --panel: var(--panel-dark);
+    --muted: var(--muted-dark);
+    --text: var(--text-dark);
+    --glass-strong: rgba(255,255,255,0.03);
+  }
+  html[data-theme="light"]{
+    --bg: var(--light-bg);
+    --panel: var(--light-panel);
+    --muted: var(--light-muted);
+    --text: var(--light-text);
+    --glass-strong: rgba(0,0,0,0.03);
+  }
+
+  /* -------------------------
+     BASE RESET
+     ------------------------- */
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale; transition:background .45s ease,color .35s ease;
+  }
+
+  /* top progress bar */
+  #scrollProgress{position:fixed;left:0;top:0;height:4px;width:0;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));z-index:9999;border-radius:0 8px 8px 0;transition:width .1s linear}
+
+  .container{max-width:var(--container);margin:0 auto;padding:28px}
+
+  /* -------------------------
+     NAV (ENHANCED)
+     ------------------------- */
+  header.nav{
+    position:sticky;top:0; /* Stick to top */
+    margin:0; /* Remove margin */
+    border-radius:0; /* Full width */
+    z-index:200;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:10px 30px;
+    max-width:1300px; /* Match inline style */
+    width: 100%;
+    margin: 0 auto; /* Center it */
+    
+    /* Use CSS variables and merge inline styles */
+    background: var(--bg-dark-2); 
+    border-bottom: 1px solid var(--glass-strong);
+    box-shadow: 0 8px 24px rgba(2,6,23,0.3);
+    backdrop-filter: blur(8px);
+  }
+  .nav-left{display:flex;align-items:center;gap:16px}
+  .brand{
+    display:flex;align-items:center;gap:10px;font-weight:800;
+  }
+  /* Style for the "EQ" badge */
+  .brand .badge{
+    background:linear-gradient(90deg,#6a5acd,#00d4ff); 
+    color:white; font-weight:700; 
+    padding:6px 10px; border-radius:8px;
+  }
+  /* Style for the "EduQuest" text */
+  .brand .brand-name {
+    color: var(--text);
+    font-weight: 600;
+    font-size: 18px;
+  }
+  
+  nav.nav-center{display:flex;gap:20px;align-items:center}
+  /* Merged inline styles and onMouseOver/Out effects */
+  nav.nav-center a{
+    color:var(--muted);
+    text-decoration:none;
+    font-weight:500;
+    transition: all .3s ease;
+    padding: 8px;
+    border-radius: 8px;
+  }
+  nav.nav-center a:hover{
+    color:#00d4ff; /* User's specified hover color */
+  }
+  nav.nav-center a.active{
+    box-shadow:inset 0 -3px 0 0 #00d4ff;
+    color:#00d4ff;
+  }
+
+  /* Renamed .nav-right to .auth-buttons to match new HTML */
+  .auth-buttons{display:flex;gap:10px;align-items:center}
+  
+  /* Base style for all auth buttons */
+  .auth-buttons a {
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    color: white;
+    background-size: 200% 200%;
+    transition: all 0.3s ease;
+    font-size: 13px;
+    display: block;
+    text-align: center;
+  }
+  .auth-buttons a:hover {
+    transform: scale(1.07);
+  }
+
+  /* Specific button styles */
+  .auth-buttons a.student-register { 
+    background: linear-gradient(270deg, #6a5acd, #00d4ff); 
+  }
+  .auth-buttons a.student-register:hover { 
+    box-shadow: 0 0 8px rgba(106, 90, 205, 0.7); 
+  }
+
+  .auth-buttons a.student-login { 
+    background: linear-gradient(270deg, #7b68ee, #00d4ff); 
+  }
+  .auth-buttons a.student-login:hover { 
+    box-shadow: 0 0 8px rgba(123, 104, 238, 0.7); 
+  }
+
+  .auth-buttons a.teacher-register { 
+    background: linear-gradient(270deg, #ff7f50, #ff6347); 
+  }
+  .auth-buttons a.teacher-register:hover { 
+    box-shadow: 0 0 8px rgba(255, 99, 71, 0.6); 
+  }
+
+  .auth-buttons a.teacher-login { 
+    background: linear-gradient(270deg, #ffa94d, #ff6b6b); 
+  }
+  .auth-buttons a.teacher-login:hover { 
+    box-shadow: 0 0 8px rgba(255, 140, 0, 0.6); 
+  }
+  
+  /* Style for the new Theme Toggle button */
+  #themeToggle {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    font-size: 1.2rem;
+    border-radius: 10px;
+    line-height: 1;
+    color: var(--muted);
+  }
+  #themeToggle:hover {
+    color: var(--text);
+  }
+
+  .btn{border:0;padding:10px 14px;border-radius:999px;cursor:pointer;font-weight:700}
+  .btn.primary{background:linear-gradient(90deg,var(--accent-1),var(--accent-2));color:#fff;box-shadow:0 12px 36px rgba(139,92,246,0.12)}
+  .btn.ghost{background:transparent;border:1px solid var(--glass-strong);color:var(--muted)}
+
+  /* HERO */
+  .hero{min-height:78vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:36px 0}
+  .hero-inner{display:flex;gap:40px;align-items:center;max-width:var(--container);margin:0 auto;padding:0 24px;width:100%}
+  .hero-left{flex:1;min-width:320px}
+  .kicker{display:inline-block;padding:8px 14px;border-radius:999px;border:1px solid rgba(255,255,255,0.04);color:var(--accent-2);background:transparent;font-weight:700;margin-bottom:18px}
+  .headline{font-size:clamp(34px,6vw,80px);line-height:1.02;margin:0 0 18px;font-weight:900;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--muted);max-width:70ch;font-size:18px;margin-bottom:26px}
+  .cta-row{display:flex;gap:16px;align-items:center}
+
+  .hero-right{width:420px;flex:0 0 420px;display:flex;flex-direction:column;align-items:center;gap:14px;z-index:2}
+  .device{
+    width:360px;border-radius:18px;padding:14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border:1px solid rgba(255,255,255,0.03);box-shadow:0 20px 60px rgba(11,8,26,0.5)
+  }
+
+  /* subtle radial glows */
+  .glow-left,.glow-right{
+    position:absolute;filter:blur(80px);opacity:.6;border-radius:50%;z-index:1;pointer-events:none;
+  }
+  .glow-left{width:420px;height:420px;left:-8%;top:6%;background:radial-gradient(circle at 30% 30%, rgba(139,92,246,0.28), transparent)}
+  .glow-right{width:420px;height:420px;right:-6%;bottom:12%;background:radial-gradient(circle at 70% 70%, rgba(255,71,168,0.18), transparent)}
+
+  /* SECTIONS */
+  section{padding:72px 0}
+  .section-title{font-size:28px;font-weight:800;margin-bottom:8px;color:var(--accent-2);text-align:center}
+  .section-sub{color:var(--muted);text-align:center;margin-bottom:24px}
+
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .feature-card{background:var(--panel);padding:22px;border-radius:16px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 12px 36px rgba(2,6,23,0.4)}
+  .feature-card .icon{width:50px;height:50px;border-radius:12px;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));display:flex;align-items:center;justify-content:center;color:white;margin-bottom:12px}
+  .feature-card h4{margin:0 0 8px;font-size:18px}
+  .feature-card p{color:var(--muted);margin:0}
+
+  /* XP & analytics area */
+  .xp-area{display:flex;gap:28px;align-items:flex-start;justify-content:space-between}
+  .xp-left{flex:1;max-width:640px}
+  .xp-right{flex:0 0 520px;background:var(--panel);padding:26px;border-radius:18px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 18px 50px rgba(2,6,23,0.45)}
+  .xp-right h2{font-size:44px;color:var(--accent-2);margin:0 0 8px;text-align:center}
+  .metric{display:flex;align-items:center;justify-content:space-between;padding:10px 0}
+  .bar-wrap{flex:1;margin:0 12px;background:rgba(255,255,255,0.02);height:12px;border-radius:999px;overflow:hidden}
+  .bar{height:100%;width:0;border-radius:999px}
+
+  /* Review / cards */
+  .cards-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .big-panel{background:var(--panel);padding:22px;border-radius:18px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 16px 40px rgba(2,6,23,0.42)}
+
+  /* CTA */
+  .cta-center{text-align:center;margin:24px 0}
+  .btn-xl{padding:14px 28px;border-radius:999px;font-weight:800}
+
+  /* footer */
+  footer.sitefoot{padding:40px 0;background:transparent;color:var(--muted);border-top:1px solid rgba(255,255,255,0.02)}
+  .footer-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
+
+  /* back to top */
+  #backTop{position:fixed;right:18px;bottom:18px;width:54px;height:54px;border-radius:99px;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));display:flex;align-items:center;justify-content:center;color:white;cursor:pointer;box-shadow:0 16px 48px rgba(139,92,246,0.18);z-index:999;opacity:0;transform:translateY(22px);transition:all .28s ease}
+
+  /* side quick nav */
+  .side-nav{position:fixed;left:18px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:12px;z-index:600}
+  .side-nav a{width:42px;height:42px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);display:flex;align-items:center;justify-content:center;color:var(--muted);text-decoration:none}
+  .side-nav a:hover{transform:translateX(6px);color:var(--text)}
+
+  /* reveal animations initial */
+  .reveal{opacity:0;transform:translateY(18px);transition:all .7s cubic-bezier(.2,.9,.2,1)}
+  .reveal.show{opacity:1;transform:none}
+
+  /* -------------------------
+     CHATBOT STYLES
+     ------------------------- */
+  #chat-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 28px;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
+    z-index: 1000;
+    transition: all .3s ease;
+  }
+  #chat-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 35px rgba(139, 92, 246, 0.4);
+  }
+
+  #chat-widget {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    width: 370px;
+    max-width: calc(100vw - 40px);
+    height: 500px;
+    max-height: calc(100vh - 120px);
+    background: var(--panel);
+    border: 1px solid var(--glass-strong);
+    border-radius: var(--radius);
+    box-shadow: 0 20px 60px rgba(2, 6, 23, 0.5);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 1001;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all .3s cubic-bezier(.2,.9,.2,1);
+  }
+  #chat-widget.show {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  #chat-header {
+    padding: 14px 18px;
+    background: var(--bg-dark-2);
+    border-bottom: 1px solid var(--glass-strong);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  #chat-header strong {
+    color: var(--text);
+  }
+  #chat-close {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 5px;
+  }
+  #chat-close:hover {
+    color: var(--text);
+  }
+
+  #chat-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .message {
+    padding: 10px 14px;
+    border-radius: 12px;
+    line-height: 1.5;
+    max-width: 85%;
+    word-wrap: break-word;
+  }
+  .message.user {
+    background: var(--accent-1);
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+  }
+  .message.bot {
+    background: var(--glass-strong);
+    color: var(--muted);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+  }
+  .message.bot.error {
+    background: #800; /* Dark red */
+    color: white;
+  }
+  .message.bot.loader {
+    font-style: italic;
+    color: var(--muted);
+  }
+
+  #chat-form {
+    display: flex;
+    padding: 14px;
+    border-top: 1px solid var(--glass-strong);
+    gap: 10px;
+  }
+  #chat-input {
+    flex-grow: 1;
+    background: var(--glass-strong);
+    border: 1px solid var(--glass);
+    border-radius: 999px;
+    padding: 10px 16px;
+    color: var(--text);
+    font-size: 14px;
+  }
+  #chat-input:focus {
+    outline: none;
+    border-color: var(--accent-1);
+  }
+  #chat-send {
+    background: var(--accent-1);
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    cursor: pointer;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  #chat-send:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* -------------------------
+     RESPONSIVE
+     ------------------------- */
+  @media (max-width:1100px){
+    .grid-3{grid-template-columns:repeat(2,1fr)}
+    .xp-area{flex-direction:column}
+    .hero-right{display:none}
+    .side-nav{display:none}
+    
+    /* Responsive Header: Wrap items */
+    header.nav { 
+      flex-wrap: wrap; 
+      justify-content: center; 
+      gap: 16px; 
+      padding: 16px; 
+    }
+    nav.nav-center { 
+      order: 3; /* Nav links go last */
+      width: 100%; 
+      justify-content: center; 
+      flex-wrap: wrap; 
+      gap: 10px; /* Add gap for wrapped links */
+    }
+    .nav-left { order: 1; } /* Logo first */
+    .auth-buttons { 
+      order: 2; /* Buttons second */
+      flex-wrap: wrap; 
+      justify-content: center; 
+    }
+  }
+  
+  @media (max-width:720px){
+    .grid-3{grid-template-columns:1fr}
+    .cards-2{grid-template-columns:1fr}
+    header.nav{
+      padding:12px; /* Give a bit more space for wrapped items */
+    }
+    /* Shrink nav links and buttons on mobile */
+    nav.nav-center a { 
+      padding: 6px; 
+      font-size: 14px; 
+    }
+    .auth-buttons a { 
+      padding: 6px 10px; 
+      font-size: 12px; 
+    }
+    
+    .headline{font-size:34px}
+    .container{padding:18px}
+  }
+</style>
+</head>
+<body>
+
+<div id="scrollProgress" aria-hidden="true"></div>
+
+<!-- particle canvas -->
+<canvas id="bgCanvas" style="position:fixed;inset:0;z-index:0;pointer-events:none"></canvas>
+
+<!-- side quick nav -->
+<div class="side-nav" aria-hidden="true">
+  <a href="#home" title="Home">🏠</a>
+  <a href="#features" title="Features">✨</a>
+  <a href="#leaderboard" title="Leaderboard">🏆</a>
+  <a href="#analytics" title="Analytics">📊</a>
+  <a href="#review" title="Review">🤖</a>
+</div>
+
+<!-- header -->
+<header class="nav container" role="banner">
+  
+  <!-- Left Logo -->
+  <div class="nav-left">
+    <div class="brand">
+      <div class="badge">EQ</div>
+      <div class="brand-name">EduQuest</div>
+    </div>
+  </div>
+
+  <!-- Center Nav Links -->
+  <nav class="nav-center" aria-label="Primary navigation">
+    <a href="#home">Home</a>
+    <a href="#features">Features</a>
+    <a href="leaderboard.html">Leaderboard</a>
+    <a href="analytics.html">Analytics</a>
+    <a href="#review">Review</a>
+    <a href="#about">About</a>
+  </nav>
+
+  <!-- Right Buttons -->
+  <div class="auth-buttons">
+    <!-- Student Register -->
+    <a href="{% url 'signup' %}" class="student-register">
+      🎓 Register Student
+    </a>
+
+    <!-- Student Login -->
+    <a href="{% url 'login' %}" class="student-login">
+      🔑 Login Student
+    </a>
+
+    <!-- Teacher Register -->
+    <a href="{% url 'signup_teacher' %}" class="teacher-register">
+      🧑‍🏫 Register Teacher
+    </a>
+
+    <!-- Teacher Login -->
+    <a href="{% url 'login_teacher' %}" class="teacher-login">
+      🔐 Login Teacher
+    </a>
+    
+    <!-- Theme Toggle Button (for the JS) -->
+    <button id="themeToggle" class="btn ghost" title="Toggle theme (T)">☀</button>
+  </div>
+
+</header>
+
+<!-- ... (all existing sections: hero, features, leaderboard, etc.) ... -->
+
+<!-- hero -->
+<section id="home" class="hero" aria-labelledby="hero-heading">
+  <div class="glow-left"></div>
+  <div class="glow-right"></div>
+
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="kicker">Welcome to the Future of Learning</div>
+      <h1 id="hero-heading" class="headline">Gamify Your Learning Journey 🚀</h1>
+      <p class="sub">Earn XP, master skills, compete on leaderboards. Transform education into an exciting adventure where every achievement matters.</p>
+
+      <div class="cta-row">
+        <a href="register.html" class="btn primary btn-xl">Get Started →</a>
+        <a href="#leaderboard" class="btn ghost btn-xl">View Leaderboard</a>
+      </div>
+    </div>
+
+    <div class="hero-right reveal" aria-hidden="true">
+      <div class="device">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div style="font-weight:800;color:var(--accent-1)">Lv. 12</div>
+          <div style="font-weight:700;color:var(--muted)">XP 2,420</div>
+        </div>
+        <div style="height:10px;background:rgba(255,255,255,0.03);border-radius:999px;overflow:hidden;margin-bottom:12px">
+          <div id="heroProgress" style="width:0%;height:100%;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));transition: width 1s ease .2s;"></div>
+        </div>
+        <div style="background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:10px;border-radius:10px">
+          <strong>Sorting Challenge</strong>
+          <div style="color:var(--muted);font-size:.95rem">Due in 2 days · +50 XP</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- features -->
+<section id="features" class="reveal">
+  <div class="container">
+    <div class="section-title">Powerful Features</div>
+    <div class="section-sub">Everything you need to revolutionize learning</div>
+
+    <div class="grid-3" style="margin-top:26px">
+      <div class="feature-card">
+        <div class="icon">⚡</div>
+        <h4>Earn XP</h4>
+        <p>Gain points for every assignment completed and skill mastered.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="icon">📈</div>
+        <h4>Advanced Analytics</h4>
+        <p>Track progress with detailed insights and performance metrics.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="icon">🏆</div>
+        <h4>Leaderboards</h4>
+        <p>Compete with peers and climb the global rankings.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="icon">👥</div>
+        <h4>Teacher Tools</h4>
+        <p>Manage students, assignments, and grading effortlessly.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="icon">🤖</div>
+        <h4>AI Review</h4>
+        <p>Automated assignment evaluation with intelligent feedback.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="icon">⚙</div>
+        <h4>Real-time Insights</h4>
+        <p>Monitor student progress with live dashboards and alerts.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- leaderboard preview -->
+<section id="leaderboard" class="reveal">
+  <div class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:20px; flex-wrap: wrap;">
+      <div style="flex:1; min-width: 300px;">
+        <div class="section-title" style="text-align: left;">Top Performers</div>
+        <div class="section-sub" style="text-align: left;">Celebrate the best — weekly & all-time leaders</div>
+
+        <div style="margin-top:18px" class="big-panel">
+          <div style="display:flex;gap:18px;align-items:center;justify-content:space-between">
+            <div>
+              <strong style="font-size:18px">Riya Patel</strong><div style="color:var(--muted)">1200 XP • Web Development</div>
+            </div>
+            <div style="font-weight:800;color:var(--accent-1);font-size:20px">1</div>
+          </div>
+
+          <div style="height:12px;background:rgba(255,255,255,0.02);border-radius:999px;overflow:hidden;margin-top:12px">
+            <div style="width:72%;height:100%;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));"></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="flex:0 0 360px; min-width: 300px;">
+        <div class="big-panel" style="text-align: center;">
+          <div style="font-size:22px;font-weight:800;color:var(--accent-2)">Leaderboard</div>
+          <div style="color:var(--muted);margin-top:8px">See top students and performance trends.</div>
+          <div style="margin-top:14px"><a class="btn primary" href="leaderboard.html">View Full Leaderboard</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- XP & analytics -->
+<section id="analytics" class="reveal">
+  <div class="container xp-area">
+    <div class="xp-left">
+      <div class="section-title" style="text-align: left;">Earn XP & Level Up</div>
+      <div class="section-sub" style="text-align: left;">Every assignment completed, quiz passed, and skill mastered earns you valuable XP points.</div>
+
+      <ul style="margin-top:16px;color:var(--muted);line-height:1.8; padding-left: 20px;">
+        <li>50 XP for each assignment</li>
+        <li>100 XP for perfect scores</li>
+        <li>25 XP for streak bonuses</li>
+      </ul>
+    </div>
+
+    <div class="xp-right">
+      <div style="text-align:center;margin-bottom:8px">
+        <div style="font-size:36px;font-weight:900;color:var(--accent-2)">2,450</div>
+        <div style="color:var(--muted)">Total XP Earned</div>
+      </div>
+
+      <div style="margin-top:18px">
+        <div class="metric">
+          <div>Assignments</div>
+          <div style="color:var(--accent-2)">45%</div>
+        </div>
+        <div style="display:flex;align-items:center">
+          <div class="bar-wrap"><div class="bar" data-color="linear-gradient(90deg,var(--accent-1),var(--accent-2))" data-target="45%"></div></div>
+        </div>
+
+        <div class="metric" style="margin-top:10px">
+          <div>Quizzes</div>
+          <div style="color:#ff6b9a">30%</div>
+        </div>
+        <div style="display:flex;align-items:center">
+          <div class="bar-wrap"><div class="bar" data-color="linear-gradient(90deg,#ff6b9a,#ffb27a)" data-target="30%"></div></div>
+        </div>
+
+        <div class="metric" style="margin-top:10px">
+          <div>Bonuses</div>
+          <div style="color:#6bd3ff">25%</div>
+        </div>
+        <div style="display:flex;align-items:center">
+          <div class="bar-wrap"><div class="bar" data-color="linear-gradient(90deg,#6bd3ff,#8b5cf6)" data-target="25%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- review options -->
+<section id="review" class="reveal">
+  <div class="container">
+    <div class="section-title">Flexible Review Options</div>
+    <div class="section-sub">Choose how you want to grade assignments</div>
+
+    <div class="cards-2" style="margin-top:20px">
+      <div class="big-panel">
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div style="font-size:36px;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));color:#fff;border-radius:10px;padding:8px; line-height: 1;">👩‍🏫</div>
+          <div>
+            <h3 style="margin:0 0 6px">Manual Review</h3>
+            <p style="color:var(--muted);margin:0 0 10px">Personally evaluate each submission with detailed feedback.</p>
+            <ul style="color:var(--muted);line-height:1.8; padding-left: 20px;">
+              <li>Personalized feedback</li>
+              <li>Detailed rubrics</li>
+              <li>Direct student interaction</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="big-panel">
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div style="font-size:36px;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));color:#fff;border-radius:10px;padding:8px; line-height: 1;">🤖</div>
+          <div>
+            <h3 style="margin:0 0 6px">AI-Powered Review</h3>
+            <p style="color:var(--muted);margin:0 0 10px">Let intelligent algorithms analyze submissions and provide instant feedback.</p>
+            <ul style="color:var(--muted);line-height:1.8; padding-left: 20px;">
+              <li>Instant evaluation</li>
+              <li>Consistent grading</li>
+              <li>Pattern detection</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="reveal">
+  <div class="container cta-center">
+    <div class="section-title">Ready to Transform Education?</div>
+    <div class="section-sub">Join thousands of students and teachers already using EduQuest.</div>
+
+    <div style="margin-top:20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 14px;">
+      <a class="btn primary btn-xl" href="register.html">Join as Student</a>
+      <a class="btn ghost btn-xl" href="register.html" style="background:linear-gradient(90deg,#2ac7ff,#7a8bff);color:white; border: none;">Join as Teacher</a>
+    </div>
+  </div>
+</section>
+
+<!-- footer -->
+<footer class="sitefoot">
+  <div class="container footer-grid">
+    <div>
+      <h3 style="color:var(--accent-1);">EduQuest</h3>
+      <p style="color:var(--muted);max-width:320px">Transforming education through gamification and AI-powered insights. Making learning fun, engaging and effective.</p>
+    </div>
+    <div>
+      <h4 style="color:var(--text)">Quick Links</h4>
+      <ul style="list-style:none;padding:0;color:var(--muted); line-height: 2;">
+        <li><a href="#home" style="color:var(--muted);text-decoration:none">Home</a></li>
+        <li><a href="#features" style="color:var(--muted);text-decoration:none">Features</a></li>
+        <li><a href="leaderboard.html" style="color:var(--muted);text-decoration:none">Leaderboard</a></li>
+        <li><a href="analytics.html" style="color:var(--muted);text-decoration:none">Analytics</a></li>
+        <li><a href="login.html" style="color:var(--muted);text-decoration:none">Login</a></li>
+        <li><a href="register.html" style="color:var(--muted);text-decoration:none">Register</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 style="color:var(--text)">Follow</h4>
+      <div style="display:flex;gap:12px;margin-top:10px">
+        <div style="width:40px;height:40px;border-radius:999px;background:rgba(255,255,255,0.03);display:flex;align-items:center;justify-content:center">GH</div>
+        <div style="width:40px;height:40px;border-radius:999px;background:rgba(255,255,255,0.03);display:flex;align-items:center;justify-content:center">TW</div>
+        <div style="width:40px;height:40px;border-radius:999px;background:rgba(255,255,255,0.03);display:flex;align-items:center;justify-content:center">IN</div>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;color:var(--muted);padding:20px 0">© 2025 EduQuest • Made with ❤ by Aman</div>
+</footer>
+
+<div id="backTop" aria-hidden="true">↑</div>
+
+<!-- Chatbot Toggle Button -->
+<button id="chat-toggle" title="Open AI Assistant">🤖</button>
+
+<!-- Chatbot Widget -->
+<div id="chat-widget">
+  <div id="chat-header">
+    <strong>EduQuest AI Assistant</strong>
+    <button id="chat-close" title="Close chat">×</button>
+  </div>
+  <div id="chat-messages">
+    <!-- Initial bot message -->
+    <div class="message bot">
+      Hi there! I'm the EduQuest AI assistant. How can I help you today? 🚀
+    </div>
+    <!-- Loader element, hidden by default -->
+    <div class="message bot loader" id="chat-loader" style="display: none;">
+      EduQuest AI is typing...
+    </div>
+  </div>
+  <form id="chat-form">
+    <input type="text" id="chat-input" placeholder="Ask about assignments, XP, or...
+" required autocomplete="off">
+    <button type="submit" id="chat-send" title="Send">➤</button>
+  </form>
+</div>
+
+
+<script>
+/* -------------------------
+   THEME: load/save + toggle
+   ------------------------- */
+(function(){
+  const html = document.documentElement;
+  const saved = localStorage.getItem('eduquest-theme') || 'dark';
+  html.setAttribute('data-theme', saved);
+  
+  // Wait for the DOM to be fully loaded to ensure the button exists
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('themeToggle');
+    if (btn) {
+      btn.textContent = saved === 'dark' ? '☀' : '🌙';
+      btn.addEventListener('click', ()=> {
+        const cur = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', cur);
+        localStorage.setItem('eduquest-theme', cur);
+        btn.textContent = cur === 'dark' ? '☀' : '🌙';
+      });
+    }
+  });
+})();
+
+/* -------------------------
+   SCROLL PROGRESS, NAV HIGHLIGHT, BACK TOP
+   ------------------------- */
+(function(){
+  const progress = document.getElementById('scrollProgress');
+  const back = document.getElementById('backTop');
+  let navLinks = [];
+  let sections = [];
+
+  function updateScrollElements() {
+    navLinks = document.querySelectorAll('nav.nav-center a[href^="#"]');
+    sections = document.querySelectorAll('section[id]');
+  }
+
+  function onScroll(){
+    const height = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = height <= 0 ? 0 : (window.scrollY / height) * 100;
+    if(progress) progress.style.width = pct + '%';
+
+    const pos = window.scrollY + (window.innerHeight * 0.35);
+    
+    sections.forEach(s => {
+      const top = s.offsetTop;
+      const bottom = top + s.offsetHeight;
+      const link = document.querySelector('nav.nav-center a[href="#'+s.id+'"]');
+      
+      if (pos >= top && pos < bottom) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        if(link) link.classList.add('active');
+      }
+    });
+
+    if(back) {
+      if(window.scrollY > 560){
+        back.style.opacity = '1';
+        back.style.transform = 'translateY(0)';
+      } else {
+        back.style.opacity = '0';
+        back.style.transform = 'translateY(18px)';
+      }
+    }
+  }
+
+  // Initial setup
+  document.addEventListener('DOMContentLoaded', () => {
+    updateScrollElements();
+    onScroll(); // Run on load
+    if (back) {
+      back.addEventListener('click', ()=> window.scrollTo({top:0,behavior:'smooth'}));
+    }
+  });
+  
+  window.addEventListener('scroll', onScroll, {passive:true});
+  // Re-check elements on resize/nav, though DOMContentLoaded is usually enough
+  window.addEventListener('resize', updateScrollElements, {passive:true});
+})();
+
+/* -------------------------
+   SMOOTH NAV CLICK
+   ------------------------- */
+function initSmoothScroll() {
+  document.querySelectorAll('nav.nav-center a[href^="#"], .side-nav a[href^="#"]').forEach(a=>{
+    a.addEventListener('click', e=>{
+      const href = a.getAttribute('href');
+      
+      // Only smooth-scroll for internal anchors (#something)
+      if (href.startsWith('#')) {
+        e.preventDefault();
+        const id = href.slice(1);
+        const el = document.getElementById(id);
+        if (el) {
+            // Calculate offset for sticky header
+            const headerOffset = document.querySelector('header.nav')?.offsetHeight || 0;
+            const elementPosition = el.getBoundingClientRect().top + window.scrollY;
+            const offsetPosition = elementPosition - headerOffset - 20; // 20px buffer
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+        }
+      }
+      // Otherwise (like register.html, login.html) -> let it open normally
+    });
+  });
+}
+document.addEventListener('DOMContentLoaded', initSmoothScroll);
+
+
+/* -------------------------
+   REVEAL ON SCROLL (IntersectionObserver)
+   ------------------------- */
+(function(){
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(en=>{
+      if(en.isIntersecting) {
+        en.target.classList.add('show');
+        // Optional: unobserve after reveal
+        // obs.unobserve(en.target);
+      }
+    });
+  }, {threshold:0.1}); // Trigger a bit earlier
+  
+  // Run on DOMContentLoaded
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+  });
+})();
+
+/* -------------------------
+   BAR ANIMATION (XP analytics)
+   ------------------------- */
+(function(){
+  function animateBars(){
+    document.querySelectorAll('.bar').forEach((b, i)=>{
+      const target = b.getAttribute('data-target') || '50%';
+      const color = b.getAttribute('data-color') || 'linear-gradient(90deg,var(--accent-1),var(--accent-2))';
+      b.style.background = color;
+      b.style.transition = `width ${0.6 + i*0.2}s cubic-bezier(.2,.9,.2,1)`;
+      // animate width
+      setTimeout(()=> b.style.width = target, 100); // small delay
+    });
+  }
+  
+  document.addEventListener('DOMContentLoaded', () => {
+    const el = document.getElementById('analytics');
+    if(el){
+      const io = new IntersectionObserver((entries, obs)=>{
+        entries.forEach(en=>{
+          if(en.isIntersecting){ 
+            animateBars(); 
+            obs.disconnect(); // Animate only once
+          }
+        });
+      }, {threshold:0.25});
+      io.observe(el);
+    } else { 
+      // Fallback if section ID is wrong
+      animateBars(); 
+    }
+  });
+})();
+
+/* -------------------------
+   LIGHT PARTICLES BACKGROUND (lightweight)
+   ------------------------- */
+(function(){
+  const canvas = document.getElementById('bgCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W=0,H=0, parts=[];
+  let rafId = null;
+
+  function rnd(a,b){return Math.random()*(b-a)+a}
+  
+  function resize(){
+    W=canvas.width = innerWidth; 
+    H=canvas.height=innerHeight;
+    init();
+  }
+  
+  function init(){
+    parts = [];
+    const count = Math.max(12, Math.floor((W*H)/180000)); // Fewer particles
+    for(let i=0;i<count;i++){
+      parts.push({
+        x:rnd(0,W), y:rnd(0,H), 
+        r:rnd(0.5, 1.8), // Smaller
+        vx:rnd(-0.05,0.05), vy:rnd(-0.03,0.03), 
+        a:rnd(0.05, 0.15) // Fainter
+      });
+    }
+  }
+  
+  function frame(){
+    if (W > 0 && H > 0) {
+      ctx.clearRect(0,0,W,H);
+      parts.forEach(p=>{
+        p.x += p.vx; p.y += p.vy;
+        if(p.x < 0) p.x = W; if(p.x > W) p.x = 0;
+        if(p.y < 0) p.y = H; if(p.y > H) p.y = 0;
+        
+        ctx.fillStyle = `rgba(255,255,255,${p.a})`;
+        ctx.beginPath(); 
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2); 
+        ctx.fill();
+      });
+    }
+    rafId = requestAnimationFrame(frame);
+  }
+  
+  window.addEventListener('resize', resize, {passive:true});
+  
+  // Start on load
+  document.addEventListener('DOMContentLoaded', () => {
+    resize();
+    if (rafId) cancelAnimationFrame(rafId);
+    frame();
+  });
+})();
+
+/* -------------------------
+   ACCESS: press "T" toggles theme
+   ------------------------- */
+window.addEventListener('keydown', (e)=>{ 
+  // Avoid toggling if user is typing in a form
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || document.getElementById('chat-widget').classList.contains('show')) return;
+  
+  if(e.key.toLowerCase()==='t'){ 
+    const html=document.documentElement; 
+    const cur=html.getAttribute('data-theme')==='dark'?'light':'dark'; 
+    html.setAttribute('data-theme',cur); 
+    localStorage.setItem('eduquest-theme',cur); 
+    const btn = document.getElementById('themeToggle');
+    if (btn) btn.textContent = cur==='dark' ? '☀' : '🌙'; 
+  } 
+});
+
+/* -------------------------
+   small: activate hero progress width animation on load
+   ------------------------- */
+window.addEventListener('load', ()=> {
+  const hp = document.getElementById('heroProgress');
+  if(hp) {
+    // Ensure it's visible before animating
+    setTimeout(()=> hp.style.width = '62%', 200);
+  }
+});
+</script>
+
+<!-- 
+/* -------------------------
+   CHATBOT SCRIPT
+   ------------------------- */
+-->
+<script>
+(function() {
+  // Wait for the DOM to be fully loaded before attaching listeners
+  document.addEventListener('DOMContentLoaded', () => {
+    
+    // --- 1. DOM Element References ---
+    const chatToggle = document.getElementById('chat-toggle');
+    const chatWidget = document.getElementById('chat-widget');
+    const chatClose = document.getElementById('chat-close');
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-input');
+    const chatSend = document.getElementById('chat-send');
+    const chatMessages = document.getElementById('chat-messages');
+    const chatLoader = document.getElementById('chat-loader');
+
+    if (!chatToggle || !chatWidget || !chatClose || !chatForm || !chatInput || !chatSend || !chatMessages || !chatLoader) {
+      console.error("Chatbot UI elements not found. Aborting chatbot script.");
+      return;
+    }
+
+    // --- 2. Core Functions ---
+
+    /**
+     * Toggles the chat widget's visibility.
+     * @param {boolean} [forceShow] - Optional. If true, show widget. If false, hide.
+     */
+    function toggleChat(forceShow = null) {
+      if (forceShow === true) {
+        chatWidget.classList.add('show');
+      } else if (forceShow === false) {
+        chatWidget.classList.remove('show');
+      } else {
+        chatWidget.classList.toggle('show');
+      }
+    }
+
+    /**
+     * Appends a message to the chat window.
+     * @param {string} text - The message content.
+     * @param {'user' | 'bot'} sender - The sender of the message.
+     * @param {boolean} [isError=false] - Whether this is an error message.
+     */
+    function addMessage(text, sender, isError = false) {
+      const messageElement = document.createElement('div');
+      messageElement.className = `message ${sender}`;
+      if (isError) {
+        messageElement.classList.add('error');
+      }
+      
+      // Sanitize text before adding (simple textContent is safest)
+      messageElement.textContent = text;
+      
+      // Insert the new message *before* the loader
+      chatMessages.insertBefore(messageElement, chatLoader);
+      
+      // Scroll to the bottom
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    /**
+     * Shows or hides the "typing..." loader.
+     * @param {boolean} isLoading - Whether to show the loader.
+     */
+    function showLoader(isLoading) {
+      chatLoader.style.display = isLoading ? 'block' : 'none';
+      if (isLoading) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+    }
+
+    /**
+     * Calls the Gemini API with retry logic (exponential backoff).
+     * @param {string} prompt - The user's prompt.
+     * @param {number} [retries=3] - Number of retries left.
+     * @param {number} [delay=1000] - Delay in ms before next retry.
+     * @returns {Promise<string>} - The bot's response text.
+     */
+    async function getGeminiResponse(prompt, retries = 3, delay = 1000) {
+      const apiKey = "AIzaSyDDW10q4DUA4hhCctlDkqtnjcphU5H8Dr4"; // Per instructions, leave as-is.
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+      
+      // System prompt to define the bot's persona
+      const systemPrompt = "You are EduQuest AI, a helpful and encouraging assistant for a gamified learning platform. Your goal is to help students and teachers with questions about learning, education, and the EduQuest platform. Keep your answers concise, friendly, and motivating. Use emojis where appropriate. 🚀";
+
+      const payload = {
+        contents: [{ parts: [{ text: prompt }] }],
+        systemInstruction: {
+          parts: [{ text: systemPrompt }]
+        },
+      };
+
+      try {
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          // Only retry on 429 (Too Many Requests) or 5xx (Server Errors)
+          if ((response.status === 429 || response.status >= 500) && retries > 0) {
+            // This is a retry attempt, not a console error.
+            await new Promise(res => setTimeout(res, delay));
+            return getGeminiResponse(prompt, retries - 1, delay * 2); // Exponential backoff
+          }
+          // For other errors (like 400), throw immediately
+          throw new Error(`API Error: ${response.status} ${response.statusText}`);
+        }
+
+        const result = await response.json();
+        const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+        if (text) {
+          return text;
+        } else {
+          // This handles cases where the API returns 200 OK but no content
+          throw new Error("No response text from API.");
+        }
+
+      } catch (error) {
+        // This catches fetch errors (e.g., network down) or the thrown errors
+        if (retries > 0) {
+          // Retry on network errors
+          await new Promise(res => setTimeout(res, delay));
+          return getGeminiResponse(prompt, retries - 1, delay * 2);
+        }
+        // If all retries fail, log the final error and re-throw
+        console.error("Gemini API call failed after all retries:", error);
+        throw error; // Re-throw to be caught by the form handler
+      }
+    }
+
+    /**
+     * Handles the chat form submission.
+     * @param {Event} event - The form submit event.
+     */
+    async function handleFormSubmit(event) {
+      event.preventDefault();
+      const userPrompt = chatInput.value.trim();
+      
+      if (!userPrompt) {
+        return;
+      }
+      
+      // Disable form while processing
+      chatInput.value = '';
+      chatInput.disabled = true;
+      chatSend.disabled = true;
+      
+      // 1. Add user's message to UI
+      addMessage(userPrompt, 'user');
+      
+      // 2. Show loader
+      showLoader(true);
+
+      try {
+        // 3. Call API
+        const botResponse = await getGeminiResponse(userPrompt);
+        
+        // 4. Add bot's response to UI
+        addMessage(botResponse, 'bot');
+
+      } catch (error) {
+        // 5. Show error message in chat
+        addMessage("Oh no! I'm having trouble connecting right now. Please try again in a moment.", 'bot', true);
+      
+      } finally {
+        // 6. Hide loader and re-enable form
+        showLoader(false);
+        chatInput.disabled = false;
+        chatSend.disabled = false;
+        chatInput.focus();
+      }
+    }
+
+    // --- 3. Event Listeners ---
+    chatToggle.addEventListener('click', () => toggleChat());
+    chatClose.addEventListener('click', () => toggleChat(false));
+    chatForm.addEventListener('submit', handleFormSubmit);
+
+  });
+})();
+</script>
+
+</body>
+</html>
+
