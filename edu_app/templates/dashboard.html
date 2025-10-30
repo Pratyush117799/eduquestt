@@ -62,6 +62,39 @@
   .progress-bar-wrap{background:linear-gradient(180deg, rgba(0,0,0,0.02), transparent);height:12px;border-radius:999px;overflow:hidden;border:1px solid rgba(0,0,0,0.04)}
   .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));box-shadow:0 6px 18px rgba(108,99,255,0.12);transition:width .9s ease-in-out}
 
+  /* ==== HEATMAP ==== */
+.heatmap-grid{
+  display:grid;
+  grid-template-columns:repeat(53,10px);
+  gap:3px;
+  justify-content:center;
+}
+.heat-cell{
+  width:10px;height:10px;border-radius:2px;
+  background:#e5e7eb;transition:background .3s;
+}
+.heat-cell[data-level="1"]{background:#bbf7d0;}
+.heat-cell[data-level="2"]{background:#4ade80;}
+.heat-cell[data-level="3"]{background:#16a34a;}
+.heat-cell[data-level="4"]{background:#166534;}
+
+/* ==== BADGES ==== */
+.badges-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:18px;
+}
+.badge{
+  width:100px;height:120px;
+  background:linear-gradient(180deg,var(--card),rgba(0,0,0,0.03));
+  border-radius:12px;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-weight:700;color:var(--accent-1);
+}
+.badge img{width:60px;height:60px;margin-bottom:8px;}
+.badge small{color:var(--muted);font-size:12px;text-align:center;}
+
+  
   /* Stats row */
   .stats{display:flex;gap:14px;flex-wrap:wrap;margin-top:16px}
   .stat{flex:1;min-width:160px;background:var(--card);padding:14px;border-radius:12px;box-shadow:var(--shadow);display:flex;justify-content:space-between;align-items:center;border:1px solid rgba(0,0,0,0.03)}
@@ -166,6 +199,28 @@
       </div>
     </div>
   </div>
+
+  <!-- ===== PERFORMANCE SECTION ===== -->
+<div class="performance-section" style="display:grid;gap:22px;margin-top:28px">
+
+  <!-- HEATMAP -->
+  <div class="card heatmap-card" style="padding:20px">
+    <h2 style="font-size:18px;margin-bottom:10px">Learning Activity Heatmap</h2>
+    <div id="heatmap" class="heatmap-grid"></div>
+    <p style="color:var(--muted);font-size:13px;margin-top:8px">
+      Each square shows a day of your learning streak.
+    </p>
+  </div>
+
+  <!-- BADGES -->
+  <div class="card badges-card" style="padding:20px">
+    <h2 style="font-size:18px;margin-bottom:14px">Your Badges</h2>
+    <div id="badgesGrid" class="badges-grid"></div>
+  </div>
+
+</div>
+
+
 
   <!-- TABS -->
   <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px">
@@ -373,6 +428,57 @@ window.addEventListener('keydown',(e)=>{
     html.setAttribute('data-theme', isDark ? 'light' : 'dark');
   }
 });
+/* ====== Heatmap + Badges Demo ====== */
+
+// Generate mock activity (past 365 days)
+function renderHeatmap() {
+  const container = document.getElementById("heatmap");
+  const days = 365;
+  const today = new Date();
+  container.innerHTML = "";
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const cell = document.createElement("div");
+    cell.className = "heat-cell";
+    // random level for demo
+    const lvl = Math.random() < 0.2 ? 0 :
+                Math.random() < 0.5 ? 1 :
+                Math.random() < 0.8 ? 2 :
+                Math.random() < 0.95 ? 3 : 4;
+    if (lvl > 0) cell.dataset.level = lvl;
+    container.appendChild(cell);
+  }
+}
+
+// Badges (you can replace icons later)
+const badges = [
+  {days:10, img:"https://cdn-icons-png.flaticon.com/512/190/190411.png"},
+  {days:50, img:"https://cdn-icons-png.flaticon.com/512/190/190411.png"},
+  {days:100, img:"https://cdn-icons-png.flaticon.com/512/190/190411.png"},
+  {days:200, img:"https://cdn-icons-png.flaticon.com/512/190/190411.png"},
+  {days:500, img:"https://cdn-icons-png.flaticon.com/512/190/190411.png"},
+  {days:1000, img:"https://cdn-icons-png.flaticon.com/512/190/190411.png"},
+];
+
+function renderBadges() {
+  const grid = document.getElementById("badgesGrid");
+  badges.forEach(b => {
+    const div = document.createElement("div");
+    div.className = "badge";
+    div.innerHTML = `
+      <img src="${b.img}" alt="Badge ${b.days} days">
+      <div>${b.days} Days</div>
+      <small>Achievement</small>
+    `;
+    grid.appendChild(div);
+  });
+}
+
+// initialize
+renderHeatmap();
+renderBadges();
+
 </script>
 </body>
 </html>
