@@ -397,6 +397,45 @@
     cursor: not-allowed;
   }
 
+  /* SCROLLER NAV (fixed, top left) */
+  .scroller-nav {
+    position: fixed;
+    top: 20px;
+    left: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 1100;
+    background: var(--bg-dark-2);
+    padding: 18px 12px 18px 12px;
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(2,6,23,0.25);
+    border: 1px solid var(--glass-strong);
+  }
+  .scroller-nav a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    color: var(--muted);
+    background: none;
+    text-decoration: none;
+    font-size: 15px;
+    padding: 8px 8px 8px 3px;
+    border-radius: 8px;
+    transition: background 0.18s, color 0.18s, transform 0.14s;
+  }
+  .scroller-nav a:hover, .scroller-nav a.active {
+    color: var(--accent-1);
+    background: var(--glass);
+    transform: translateX(6px);
+  }
+  @media (max-width: 900px) {
+    .scroller-nav {
+      display: none;
+    }
+  }
+
   /* -------------------------
      RESPONSIVE
      ------------------------- */
@@ -456,14 +495,101 @@
 <!-- particle canvas -->
 <canvas id="bgCanvas" style="position:fixed;inset:0;z-index:0;pointer-events:none"></canvas>
 
-<!-- side quick nav -->
-<div class="side-nav" aria-hidden="true">
-  <a href="#home" title="Home">🏠</a>
-  <a href="#features" title="Features">✨</a>
-  <a href="#leaderboard" title="Leaderboard">🏆</a>
-  <a href="#analytics" title="Analytics">📊</a>
-  <a href="#review" title="Review">🤖</a>
+<!-- HAMBURGER MENU: toggle sidebar -->
+<div id="hamburger-menu" style="position:fixed;z-index:1200;top:22px;left:22px;cursor:pointer;display:flex;flex-direction:column;gap:4px;width:32px;height:32px;justify-content:center;align-items:flex-start">
+  <span style="display:block;width:26px;height:4px;border-radius:2px;background:var(--muted);"></span>
+  <span style="display:block;width:22px;height:4px;border-radius:2px;background:var(--muted);"></span>
+  <span style="display:block;width:18px;height:4px;border-radius:2px;background:var(--muted);"></span>
 </div>
+
+<!-- SIDEBAR NAV - Slide out menu -->
+<nav id="sidebar-nav" class="sidebar-nav" aria-label="Main Sidebar Navigation">
+  <a href="#ai-feedback" title="AI Feedback & Assistance">🤖 AI Feedback</a>
+  <a href="#schedule" title="Schedule">📅 Schedule</a>
+  <a href="#leaderboard" title="Leaderboard">🏆 Leaderboard</a>
+  <a href="{% url 'login' %}" title="Student Login">🎓 Student Login</a>
+  <a href="{% url 'login_teacher' %}" title="Teacher Login">🧑‍🏫 Teacher Login</a>
+  <a href="#practice" title="Practice">📝 Practice</a>
+  <a href="#lectures" title="Watch Lectures">🎥 Lectures</a>
+  <a href="#about" title="About">ℹ️ About</a>
+</nav>
+
+<style>
+/* SIDEBAR NAV STYLES */
+.sidebar-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 250px;
+  background: var(--bg-dark-2);
+  border-right: 1px solid var(--glass-strong);
+  box-shadow: 0 12px 42px rgba(2,6,23,0.23), 0 1.5px 6px rgba(2,6,23,0.10);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 68px 0 18px 0; /* Leave top gap for hamburger */
+  z-index: 1300;
+  transition: transform 0.28s cubic-bezier(.2,.9,.2,1);
+  transform: translateX(-110%);
+  overflow-y: auto;
+}
+.sidebar-nav.open { transform: translateX(0); }
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: var(--muted);
+  background: none;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 12px 28px 12px 22px;
+  border-radius: 8px 20px 20px 8px;
+  margin: 2px 10px;
+  transition: background 0.16s, color 0.16s, transform 0.12s;
+}
+.sidebar-nav a:hover, .sidebar-nav a.active {
+  color: var(--accent-1);
+  background: var(--glass);
+  transform: translateX(6px);
+}
+#hamburger-menu {
+  background: var(--glass);
+  border-radius: 9px;
+  padding: 7px 5px 7px 5px;
+}
+@media (max-width:900px) {
+  .sidebar-nav { width: 80vw; }
+}
+/* Hide hamburger and sidebar on print */
+@media print {
+  #hamburger-menu, .sidebar-nav { display: none !important; }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  const sidebar = document.getElementById('sidebar-nav');
+  const hamburger = document.getElementById('hamburger-menu');
+  let isOpen = false;
+  hamburger.addEventListener('click',()=>{
+    isOpen = !isOpen;
+    sidebar.classList.toggle('open', isOpen);
+  });
+  window.addEventListener('keydown',(e)=>{
+    if(isOpen && e.key==='Escape') {sidebar.classList.remove('open'); isOpen=false;}
+  });
+  // Optional: clicking outside closes sidebar
+  document.addEventListener('click', e => {
+    if(isOpen && !sidebar.contains(e.target) && !hamburger.contains(e.target)){
+      sidebar.classList.remove('open'); isOpen=false;
+    }
+  });
+});
+</script>
+
+<!-- Remove main nav links (Features, Leaderboard, About, etc) from upper nav -->
 
 <!-- header -->
 <header class="nav container" role="banner">
@@ -479,12 +605,7 @@
 
   <!-- Center Nav Links -->
   <nav class="nav-center" aria-label="Primary navigation">
-    <a href="#home">Home</a>
-    <a href="#features">Features</a>
-    <a href="leaderboard.html">Leaderboard</a>
-    <a href="analytics.html">Analytics</a>
-    <a href="#review">Review</a>
-    <a href="#about">About</a>
+    <!-- CLEARED: links moved to sidebar nav -->
   </nav>
 
   <!-- Right Buttons -->
@@ -524,13 +645,15 @@
 
   <div class="hero-inner">
     <div class="hero-left">
+      <div style="width:84px;height:84px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;font-size:64px;">
+        🚀
+      </div>
       <div class="kicker">Welcome to the Future of Learning</div>
-      <h1 id="hero-heading" class="headline">Gamify Your Learning Journey 🚀</h1>
+      <h1 id="hero-heading" class="headline">Gamify Your Learning Journey</h1>
       <p class="sub">Earn XP, master skills, compete on leaderboards. Transform education into an exciting adventure where every achievement matters.</p>
 
       <div class="cta-row">
-        <a href="register.html" class="btn primary btn-xl">Get Started →</a>
-        <a href="#leaderboard" class="btn ghost btn-xl">View Leaderboard</a>
+        <a href="#features" class="btn primary btn-xl">Get Started →</a>
       </div>
     </div>
 
@@ -1238,6 +1361,29 @@ window.addEventListener('load', ()=> {
 
   });
 })();
+</script>
+
+<!-- Improved smooth scroll for all internal anchor links (sidebar, get started, etc) -->
+<script>
+function initTotalSmoothScroll() {
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', function(e) {
+      const href = a.getAttribute('href');
+      if (href.startsWith('#') && href.length > 1) {
+        const el = document.getElementById(href.slice(1));
+        if (el) {
+          e.preventDefault();
+          // Account for sticky header/nav height if present
+          const nav = document.querySelector('header.nav');
+          const offset = nav ? nav.offsetHeight : 0;
+          const y = el.getBoundingClientRect().top + window.scrollY - offset - 12;
+          window.scrollTo({top: y, behavior: 'smooth'});
+        }
+      }
+    });
+  });
+}
+document.addEventListener('DOMContentLoaded', initTotalSmoothScroll);
 </script>
 
 </body>
