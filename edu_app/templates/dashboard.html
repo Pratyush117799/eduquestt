@@ -223,7 +223,6 @@
 </style>
 </head>
 <body>
-  <button id="themeToggle" style="position:fixed;right:16px;top:16px;padding:8px 10px;border-radius:10px;border:none;background:#00000022;color:#fff;cursor:pointer;z-index:1300">☀</button>
 
 <div class="wrap" id="app">
   <!-- HEADER -->
@@ -659,16 +658,4 @@ renderBadges();
 
 </script>
 </body>
-</html>
-<script>
-  (function(){
-    const html=document.documentElement;const saved=localStorage.getItem('eduquest-theme')||'dark';html.setAttribute('data-theme',saved);
-    const btn=document.getElementById('themeToggle'); if(btn){btn.addEventListener('click',()=>{const cur=html.getAttribute('data-theme')==='dark'?'light':'dark';html.setAttribute('data-theme',cur);localStorage.setItem('eduquest-theme',cur);});}
-  })();
-</script>
-<style>
-  html[data-theme="dark"] body{background:#0b0f1a !important;color:#eaf3ff !important}
-  html[data-theme="dark"] header, html[data-theme="dark"] .content, html[data-theme="dark"] .tabs, html[data-theme="dark"] .card{background:#0f1620 !important;color:#eaf3ff}
-  html[data-theme="dark"] table th{background:#0f1a28 !important}
-</style>
 </html>

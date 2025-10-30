@@ -43,21 +43,8 @@
 
         <p style="text-align: center; margin-top: 15px; color: #555;">
             Don’t have an account? 
-            <a href="{% url 'signup_teacher' %}" style="color: #007BFF; text-decoration: none; transition: all 0.3s;">Sign up</a>
+            <a href="{% url 'signup' %}" style="color: #007BFF; text-decoration: none; transition: all 0.3s;">Sign up</a>
         </p>
     </div>
 </body>
 </html>
-<!-- Theme toggle (persistent) -->
-<script>
-  (function(){
-    const html = document.documentElement;
-    const saved = localStorage.getItem('eduquest-theme') || 'dark';
-    html.setAttribute('data-theme', saved);
-  })();
-</script>
-<style>
-  #themeToggle{position:fixed;right:16px;top:16px;padding:8px 10px;border-radius:10px;border:none;background:#00000022;color:#fff;cursor:pointer}
-  html[data-theme="dark"] body{background:#0b0f1a !important;color:#eaf3ff !important}
-</style>
-<button id="themeToggle" onclick="(function(){const h=document.documentElement;const cur=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',cur);localStorage.setItem('eduquest-theme',cur);})();">☀</button>
