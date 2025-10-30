@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>EduQuest Platform Features</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+/* Unified theme system to match home/leaderboard */
+:root{
+  --bg-dark: #060712;
+  --bg-dark-2: #0b0f1a;
+  --panel-dark: #0f1620;
+  --muted-dark: #9aa6b6;
+  --text-dark: #eaf3ff;
+  --accent-1: #8b5cf6;
+  --accent-2: #ff47a8;
+  --glass-strong: rgba(255,255,255,0.03);
+
+  --light-bg: #f6f8fb;
+  --light-panel: #ffffff;
+  --light-text: #0b1530;
+  --light-muted: #6b7280;
+}
+
+html[data-theme="dark"]{
+  --bg: linear-gradient(180deg,var(--bg-dark), var(--bg-dark-2));
+  --panel: var(--panel-dark);
+  --muted: var(--muted-dark);
+  --text: var(--text-dark);
+}
+html[data-theme="light"]{
+  --bg: var(--light-bg);
+  --panel: var(--light-panel);
+  --muted: var(--light-muted);
+  --text: var(--light-text);
+}
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  transition: background .45s ease, color .35s ease;
+}
+
+header {
+  text-align: center;
+  padding: 40px 0 10px 0;
+}
+
+h1 {
+  font-size: 2.3em;
+  font-weight: bold;
+  margin-bottom: 10px;
+  letter-spacing: -1px;
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.theme-toggle {
+  position: absolute;
+  right: 30px;
+  top: 30px;
+  background: transparent;
+  color: var(--muted);
+  border: 1.5px solid var(--glass-strong);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 700;
+  transition: transform .2s ease, color .2s ease, background .2s ease;
+}
+.theme-toggle:hover {transform: scale(1.05); color: var(--text);}
+
+.features-container {
+  max-width: 1050px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+  gap: 30px 28px;
+  padding: 40px 20px 50px 20px;
+}
+
+.feature-card {
+  border-radius: 16px;
+  box-shadow: 0 12px 36px rgba(2,6,23,0.4);
+  background: var(--panel);
+  color: var(--text);
+  text-align: center;
+  padding: 34px 22px 25px 22px;
+  transition: transform .18s ease, box-shadow .18s ease;
+  min-height: 235px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--glass-strong);
+}
+.feature-card:hover {transform: translateY(-4px); box-shadow: 0 16px 40px rgba(2,6,23,0.5);}
+
+.feature-card img {
+  height: 42px;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 2px 8px #ee9afd33);
+}
+
+.feature-card h2 {
+  margin: 0 0 12px 0;
+  font-size: 1.29em;
+  font-family: 'Segoe UI Semibold', Arial, sans-serif;
+}
+
+.feature-link {
+  display: inline-block;
+  margin: 10px 0 0 0;
+  padding: 0;
+  color: var(--accent-1);
+  text-decoration: none;
+  font-size: 1em;
+  font-weight: 600;
+  border-bottom: 2px solid rgba(139,92,246,0.25);
+  background: none;
+  transition: color .18s;
+}
+.feature-link:hover {color: var(--accent-2);}
+
+.feature-desc {
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: .99em;
+}
+
+@media (max-width:600px) {
+  .features-container {padding: 14px;}
+  .feature-card {padding: 22px 6px 18px 6px;}
+  .theme-toggle {right: 14px; top: 12px;}
+}
+</style>
+</head>
+<body>
+<button class="theme-toggle" id="themeToggle">☀</button>
+<header>
+    <h1>EduQuest: Platform Features</h1>
+</header>
+<div class="features-container">
+
+    <div class="feature-card">
+        <img src="https://img.icons8.com/fluency/48/000000/assignment-return.png" alt="Upload Assignment"/>
+        <h2>Upload Assignment</h2>
+        <a href="upload_assignments.html" class="feature-link">Upload Assignment</a>
+        <div class="feature-desc">Submit your work easily</div>
+    </div>
+
+    <div class="feature-card">
+        <img src="https://img.icons8.com/color/48/ai.png" alt="Assignment Schedule"/>
+        <h2>Assignment Schedule</h2>
+        <a href="assignment_schedule.html" class="feature-link">View Schedule</a>
+        <div class="feature-desc">Track & manage assignment deadlines</div>
+    </div>
+
+    <div class="feature-card">
+        <img src="https://img.icons8.com/fluency/48/ai.png" alt="Earn XP"/>
+        <h2>Earn XP</h2>
+        <a href="earn_xp.html" class="feature-link">Check XP Activities</a>
+        <div class="feature-desc">Progress as you learn</div>
+    </div>
+
+    <div class="feature-card">
+        <img src="https://img.icons8.com/fluency/48/comb.png" alt="Analytics"/>
+        <h2>Analytics</h2>
+        <a href="analytics.html" class="feature-link">View Analytics</a>
+        <div class="feature-desc">Check your performance data</div>
+    </div>
+
+    <div class="feature-card">
+        <img src="https://img.icons8.com/fluency/48/leadership.png" alt="Leaderboards"/>
+        <h2>Leaderboards</h2>
+        <a href="leaderboard.html" class="feature-link">View Leaderboards</a>
+        <div class="feature-desc">See top performers and rankings</div>
+    </div>
+
+    <div class="feature-card">
+        <img src="https://img.icons8.com/fluency/48/test-passed.png" alt="Weekly Test"/>
+        <h2>Weekly Test</h2>
+        <a href="weekly_test.html" class="feature-link">Take Test</a>
+        <div class="feature-desc">Weekly competitive challenges</div>
+    </div>
+
+    <div class="feature-card">
+        <img src="https://img.icons8.com/color/48/ai.png" alt="Leetcode Questions"/>
+        <h2>LeetCode Questions</h2>
+        <a href="leetcode_demo.html" class="feature-link">Try LeetCode Problems</a>
+        <div class="feature-desc">Sharpen coding skills</div>
+    </div>
+
+    <div class="feature-card">
+        <img src="https://img.icons8.com/color/48/artificial-intelligence.png" alt="Programming Lectures"/>
+        <h2>Programming Lectures</h2>
+        <a href="demo_lectures.html" class="feature-link">Watch Lectures</a>
+        <div class="feature-desc">Watch Lectures</div>
+    </div>
+
+    <div class="feature-card">
+        <img src="https://img.icons8.com/color/48/chatbot.png" alt="AI Assistance"/>
+        <h2>AI Assistance</h2>
+        <a href="ai_feedback_bot.html" class="feature-link">Ask your doubts</a>
+        <div class="feature-desc">Get instant help</div>
+    </div>
+
+    <div class="feature-card">
+        <img src="https://img.icons8.com/color/48/classroom.png" alt="Teacher Tools"/>
+        <h2>Tools for Teachers</h2>
+        <a href="teacher_tools.html" class="feature-link">Review Tools</a>
+        <div class="feature-desc">Management & analytics tools</div>
+    </div>
+</div>
+
+<script>
+// Persisted theme toggle matching home.html
+(function(){
+  const html = document.documentElement;
+  const saved = localStorage.getItem('eduquest-theme') || 'dark';
+  html.setAttribute('data-theme', saved);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('themeToggle');
+    if (!btn) return;
+    btn.textContent = (saved === 'dark') ? '☀' : '🌙';
+    btn.addEventListener('click', () => {
+      const cur = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', cur);
+      localStorage.setItem('eduquest-theme', cur);
+      btn.textContent = (cur === 'dark') ? '☀' : '🌙';
+    });
+  });
+})();
+</script>
+</body>
+</html>

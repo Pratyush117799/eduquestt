@@ -71,3 +71,18 @@
     </style>
 </body>
 </html>
+<!-- Theme toggle (persistent) -->
+<script>
+  (function(){
+    const html = document.documentElement;
+    const saved = localStorage.getItem('eduquest-theme') || 'dark';
+    html.setAttribute('data-theme', saved);
+  })();
+</script>
+<style>
+  #themeToggle{position:fixed;right:16px;top:16px;padding:8px 10px;border-radius:10px;border:none;background:#00000022;color:#fff;cursor:pointer}
+  html[data-theme="dark"] body{background:#0b0f1a !important;color:#eaf3ff !important}
+  html[data-theme="light"] body{filter:none}
+</style>
+<button id="themeToggle" onclick="(function(){const h=document.documentElement;const cur=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',cur);localStorage.setItem('eduquest-theme',cur);})();">☀</button>
+</html>

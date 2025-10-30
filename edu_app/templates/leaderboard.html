@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduQuest | Class Leaderboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #0f111a 0%, #08090f 100%);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 50px 20px;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      background: linear-gradient(90deg, #3888fc, #74ebd5 70%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-fill-color: transparent;
+      margin-bottom: 10px;
+      text-align: center;
+      letter-spacing: 1px;
+      animation: floatTitle 3s ease-in-out infinite;
+    }
+
+    @keyframes floatTitle {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    p.subtitle {
+      font-size: 1rem;
+      color: #bbb;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .controls {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 25px;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 15px 20px;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.3);
+      transition: 0.3s;
+      z-index: 10;
+    }
+    .controls select {
+      z-index: 1001;
+      position: relative;
+    }
+    .main-center-container {
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 1280px;
+    }
+    .table-responsive {
+      width: 100%;
+      max-width: 1200px;
+      overflow-x: auto;
+      margin-bottom: 30px;
+      border-radius: 14px;
+    }
+    table {
+      min-width: 1180px;
+    }
+    @media (max-width: 1200px) {
+      table {
+        min-width: 900px;
+        font-size: 0.95rem;
+      }
+    }
+
+    .controls:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 25px rgba(108, 99, 255, 0.3);
+    }
+
+    .controls input, .controls select {
+      padding: 12px 15px;
+      border-radius: 10px;
+      border: none;
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      outline: none;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: all 0.3s;
+      box-shadow: none;
+      min-width: 190px;
+      letter-spacing: 0.02em;
+    }
+    .controls select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background: rgba(30,30,40,0.95);
+      color: #fff;
+      border: 2px solid #6c63ff;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 1001;
+      position: relative;
+    }
+    .controls select:focus {
+      border: 2px solid #ff5afc;
+      outline: none;
+      background: rgba(60,40,70,0.96);
+    }
+    .controls option {
+      color: #111;
+      background: #fff;
+      font-size: 1.04rem;
+      font-weight: 600;
+      padding: 12px 10px;
+      letter-spacing: 0.02em;
+    }
+
+    table {
+      width: 100%;
+      max-width: 900px;
+      border-collapse: collapse;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(10px);
+      transition: transform 0.3s ease;
+    }
+
+    table:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 30px rgba(108, 99, 255, 0.25);
+    }
+
+    th, td {
+      padding: 15px 20px;
+      text-align: left;
+    }
+
+    th {
+      background: rgba(255,255,255,0.1);
+      color: #bbb;
+      font-weight: 500;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+    }
+
+    tr {
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      transition: 0.3s;
+    }
+
+    tr:last-child {
+      border-bottom: none;
+    }
+
+    tr:hover {
+      background: rgba(255,255,255,0.12);
+      transform: scale(1.01);
+    }
+
+    .empty {
+      text-align: center;
+      color: #777;
+      padding: 40px;
+    }
+
+    .trend-up { color: #4ef04e; }
+    .trend-down { color: #ff4c4c; }
+
+    @media (max-width: 700px) {
+      th, td {
+        padding: 12px 10px;
+        font-size: 0.9rem;
+      }
+    }
+    .theme-toggle-btn {
+      position: absolute;
+      top: 30px;
+      right: 42px;
+      background: #182357;
+      border: none;
+      color: #fff;
+      padding: 10px 14px 10px 12px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.45rem;
+      box-shadow: 0 2px 8px #0004;
+      display: flex;
+      align-items: center;
+      transition: background .3s, box-shadow .2s;
+      z-index: 99999;
+    }
+    .theme-toggle-btn:hover {
+      background: #286fee;
+      color: #fff;
+    }
+    body.light-mode {
+      background: linear-gradient(180deg, #ebf6ff 0%, #e5f7fc 100%) !important;
+      color: #24263f !important;
+    }
+    body.light-mode h1 {
+      color: #264c8c !important;
+      background: none !important;
+      -webkit-text-fill-color: initial !important; /* for Chrome/Safari */
+    }
+    body.light-mode th {
+      background: #eaf0fb;
+      color: #3f5577;
+    }
+    body.light-mode .controls, body.light-mode .table-responsive, body.light-mode table {
+      background: #f6fbfd !important;
+      color: inherit;
+      box-shadow: 0 2px 12px #bee4f6c2;
+    }
+  </style>
+</head>
+<body>
+  <div class="main-center-container" style="position:relative;">
+    <button class="theme-toggle-btn" id="themeToggler" title="AI Dark/Light mode">
+      <span id="toggleIcon">🤖</span>
+    </button>
+    <h1>Class Leaderboard</h1>
+    <p class="subtitle">Compete with your classmates and climb the rankings</p>
+
+    <div class="controls">
+      <input type="text" id="search" placeholder="Search classmates by name..." />
+      <select id="sort">
+        <option value="xp">Sort by XP</option>
+        <option value="level">Sort by Level</option>
+        <option value="assignments">Sort by Assignments</option>
+      </select>
+    </div>
+
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Student</th>
+            <th>Level</th>
+            <th>XP Points</th>
+            <th>Assignments</th>
+            <th>Assignments/Subject</th>
+            <th>Course</th>
+            <th>Avg. Score/Assignment</th>
+            <th>Streak</th>
+            <th>Trend</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboard"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const students = [
+      {
+        avatar: "https://randomuser.me/api/portraits/men/1.jpg",
+        name: "Aman Dobhal",
+        level: 12,
+        xp: 1200,
+        assignments: 17,
+        assignmentsPerSubject: {TOC: 4, DSA: 4, Python: 3, 'C++': 3, English: 3},
+        course: "Btech",
+        avgScore: 88,
+        streak: "🔥 5 days",
+        trend: "up"
+      },
+      {
+        avatar: "https://randomuser.me/api/portraits/women/2.jpg",
+        name: "Riya Sharma",
+        level: 10,
+        xp: 980,
+        assignments: 16,
+        assignmentsPerSubject: {TOC: 3, DSA: 3, Python: 4, 'C++': 3, English: 3},
+        course: "Bsc",
+        avgScore: 79,
+        streak: "🔥 3 days",
+        trend: "down"
+      },
+      {
+        avatar: "https://randomuser.me/api/portraits/men/3.jpg",
+        name: "Arjun Mehta",
+        level: 14,
+        xp: 1500,
+        assignments: 20,
+        assignmentsPerSubject: {TOC: 5, DSA: 3, Python: 4, 'C++': 4, English: 4},
+        course: "BCA",
+        avgScore: 92,
+        streak: "🔥 7 days",
+        trend: "up"
+      },
+      {
+        avatar: "https://randomuser.me/api/portraits/women/4.jpg",
+        name: "Kritika Joshi",
+        level: 9,
+        xp: 870,
+        assignments: 15,
+        assignmentsPerSubject: {TOC: 4, DSA: 3, Python: 3, 'C++': 2, English: 3},
+        course: "Btech",
+        avgScore: 81,
+        streak: "🔥 2 days",
+        trend: "up"
+      },
+      {
+        avatar: "https://randomuser.me/api/portraits/men/5.jpg",
+        name: "Rohan Verma",
+        level: 11,
+        xp: 1100,
+        assignments: 18,
+        assignmentsPerSubject: {TOC: 4, DSA: 4, Python: 3, 'C++': 3, English: 4},
+        course: "BCA",
+        avgScore: 86,
+        streak: "🔥 4 days",
+        trend: "down"
+      },
+    ];
+
+    const tbody = document.getElementById("leaderboard");
+    const search = document.getElementById("search");
+    const sort = document.getElementById("sort");
+
+    function renderTable(data) {
+      tbody.innerHTML = "";
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="10" class="empty">
+          <div style="font-size:2rem;">🔍</div>No students found<br>
+          <span style="font-size:0.9rem;">Try adjusting your search</span>
+        </td></tr>`;
+        return;
+      }
+      data.forEach((s, i) => {
+        const subjectString = Object.entries(s.assignmentsPerSubject)
+          .map(([key, val]) => `${key}: ${val}`)
+          .join("<br>");
+        tbody.innerHTML += `
+          <tr>
+            <td>${i + 1}</td>
+            <td style="display:flex;gap:12px;align-items:center;">
+              <img src="${s.avatar}" alt="${s.name} avatar" style="width:38px;height:38px;border-radius:50%;border:2px solid #6c63ff;background:#222;object-fit:cover;"> <span>${s.name}</span>
+            </td>
+            <td>${s.level}</td>
+            <td>${s.xp}</td>
+            <td>${s.assignments}</td>
+            <td>${subjectString}</td>
+            <td>${s.course}</td>
+            <td>${s.avgScore}%</td>
+            <td>${s.streak}</td>
+            <td class="${s.trend === "up" ? "trend-up" : "trend-down"}">
+              ${s.trend === "up" ? "▲" : "▼"}
+            </td>
+          </tr>`;
+      });
+    }
+
+    function sortData(type) {
+      const sorted = [...students];
+      if (type === "xp") sorted.sort((a, b) => b.xp - a.xp);
+      if (type === "level") sorted.sort((a, b) => b.level - a.level);
+      if (type === "assignments") sorted.sort((a, b) => b.assignments - a.assignments);
+      return sorted;
+    }
+
+    search.addEventListener("input", () => {
+      const filtered = students.filter(s =>
+        s.name.toLowerCase().includes(search.value.toLowerCase())
+      );
+      renderTable(filtered);
+    });
+
+    sort.addEventListener("change", () => {
+      renderTable(sortData(sort.value));
+    });
+
+    renderTable(sortData("xp"));
+
+    // DARK/LIGHT TOGGLE
+    const themeBtn = document.getElementById('themeToggler');
+    const icon = document.getElementById('toggleIcon');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    let dark = localStorage.getItem('lb-theme') || (prefersDark ? 'dark' : 'light');
+    applyTheme(dark === 'dark');
+    themeBtn.onclick = () => {
+      dark = dark === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('lb-theme', dark);
+      applyTheme(dark === 'dark');
+    };
+    function applyTheme(isDark) {
+      document.body.classList.toggle('light-mode', !isDark);
+      if (isDark) {
+        icon.textContent = '🤖';
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        icon.textContent = '☀';
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    }
+  </script>
+</body>
+</html>

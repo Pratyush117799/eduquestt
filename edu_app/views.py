@@ -55,6 +55,15 @@ def logout_page(request):
 def home(request):
     return render(request, 'home.html')
 
+def leaderboard(request):
+    return render(request, 'leaderboard.html')
+
+def features_page(request):
+    return render(request, 'features.html')
+
+def lecture_page(request):
+    return render(request, 'lecture.html')
+
 def signup_teacher(request):
     if request.method == 'POST':
         uname = request.POST.get('username')

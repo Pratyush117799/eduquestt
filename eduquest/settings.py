@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'edu_app',
 ]
 
-AUTHITICATION_BACKENDS = [
+# Ensure correct auth backend is configured
+AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
