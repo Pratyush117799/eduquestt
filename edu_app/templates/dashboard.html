@@ -538,6 +538,7 @@ function renderHeatmap() {
     d.setDate(today.getDate() - i);
     const cell = document.createElement("div");
     cell.className = "heat-cell";
+ 
     // random level for demo
     const lvl = Math.random() < 0.2 ? 0 :
                 Math.random() < 0.5 ? 1 :
