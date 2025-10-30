@@ -78,6 +78,90 @@
 .heat-cell[data-level="3"]{background:#16a34a;}
 .heat-cell[data-level="4"]{background:#166534;}
 
+/* ==== CP Platforms (cards) ==== */
+.cp-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:14px;
+  margin-top:8px;
+}
+
+.cp-card{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  padding:12px;
+  border-radius:12px;
+  background:linear-gradient(180deg,var(--card), rgba(0,0,0,0.02));
+  box-shadow:var(--shadow);
+  transition:transform .25s ease, box-shadow .25s ease;
+  border:1px solid rgba(0,0,0,0.03);
+  min-height:110px;
+  overflow:hidden;
+  position:relative;
+}
+
+/* icon area */
+.cp-card .icon {
+  width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;
+  background:linear-gradient(135deg, rgba(108,99,255,0.12), rgba(155,107,255,0.06));
+  color:var(--accent-1);
+  font-size:18px;
+}
+
+/* header row */
+.cp-card .top{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+}
+
+/* platform name */
+.cp-name{font-weight:800;font-size:15px}
+
+/* small stats (e.g., solved count) */
+.cp-stats{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:13px}
+
+/* action button */
+.cp-card .open-btn{
+  margin-top:auto;
+  display:inline-block;
+  padding:8px 10px;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:700;
+  font-size:13px;
+  background:linear-gradient(90deg,var(--accent-1),var(--accent-2));
+  color:#fff;
+  box-shadow:0 10px 22px rgba(108,99,255,0.08);
+  transition:transform .18s ease, box-shadow .18s ease, opacity .18s;
+}
+
+/* hover states */
+.cp-card:hover{
+  transform:translateY(-6px) scale(1.01);
+  box-shadow:0 14px 40px rgba(16,24,40,0.12);
+}
+.cp-card:hover .open-btn{transform:translateY(-2px);}
+
+/* small badge (e.g., "Practice") */
+.cp-badge{
+  position:absolute;right:10px;top:10px;background:rgba(255,255,255,0.9);padding:6px 8px;border-radius:999px;font-weight:700;font-size:12px;color:var(--muted);
+  box-shadow:0 6px 18px rgba(12,12,30,0.04);
+}
+
+/* subtle fade-in animation for cards */
+.cp-card.fade-in { animation: cpFade .45s cubic-bezier(.2,.9,.3,1) both; }
+@keyframes cpFade {
+  from { transform: translateY(8px); opacity:0; }
+  to   { transform: translateY(0); opacity:1; }
+}
+
+/* responsive tweaks */
+@media (max-width:560px){
+  .cp-card{min-height:120px}
+  .cp-card .icon{width:44px;height:44px}
+}
+
+
 /* ==== BADGES ==== */
 .badges-grid{
   display:flex;
@@ -211,6 +295,19 @@
       Each square shows a day of your learning streak.
     </p>
   </div>
+
+  <!-- ===== CP PLATFORMS SECTION ===== -->
+<div class="cp-section card" style="padding:18px; margin-top:20px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px">
+    <h2 style="margin:0;font-size:18px">Competitive Programming & Practice</h2>
+    <div style="color:var(--muted);font-size:13px">Boost your problem solving — quick links</div>
+  </div>
+
+  <div class="cp-grid" id="cpGrid" aria-live="polite">
+    <!-- JS will populate -->
+  </div>
+</div>
+
 
   <!-- BADGES -->
   <div class="card badges-card" style="padding:20px">
@@ -474,6 +571,85 @@ function renderBadges() {
     grid.appendChild(div);
   });
 }
+
+/* ====== CP PLATFORMS LINKS (populate section) ====== */
+const cpPlatforms = [
+  {
+    id: "leetcode",
+    name: "LeetCode",
+    url: "https://leetcode.com",
+    iconText: "LC",
+    hint: "Practice algorithm & interview problems",
+    solved: 128
+  },
+  {
+    id: "codeforces",
+    name: "Codeforces",
+    url: "https://codeforces.com",
+    iconText: "CF",
+    hint: "Timed contests & upsolving",
+    solved: 42
+  },
+  {
+    id: "hackerrank",
+    name: "HackerRank",
+    url: "https://www.hackerrank.com",
+    iconText: "HR",
+    hint: "Problem tracks & competitions",
+    solved: 76
+  },
+  {
+    id: "codechef",
+    name: "CodeChef",
+    url: "https://www.codechef.com",
+    iconText: "CC",
+    hint: "Long/short contests & practice",
+    solved: 54
+  },
+  {
+    id: "gfg",
+    name: "GeeksforGeeks",
+    url: "https://www.geeksforgeeks.org",
+    iconText: "GfG",
+    hint: "Theory, practice and articles",
+    solved: 210
+  }
+];
+
+function renderCPGrid() {
+  const grid = document.getElementById('cpGrid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  cpPlatforms.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'cp-card fade-in';
+    div.style.animationDelay = (i * 0.06) + 's';
+
+    div.innerHTML = `
+      <div class="cp-badge">Practice</div>
+      <div class="top">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="icon" aria-hidden="true">${p.iconText}</div>
+          <div>
+            <div class="cp-name">${p.name}</div>
+            <div style="color:var(--muted);font-size:13px">${p.hint}</div>
+          </div>
+        </div>
+        <div class="cp-stats">
+          <div style="display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${p.solved}</div>
+        </div>
+      </div>
+
+      <a class="open-btn" href="${p.url}" target="_blank" rel="noopener noreferrer">Open ${p.name}</a>
+    `;
+
+    grid.appendChild(div);
+  });
+}
+
+// call to populate
+renderCPGrid();
+
 
 // initialize
 renderHeatmap();
