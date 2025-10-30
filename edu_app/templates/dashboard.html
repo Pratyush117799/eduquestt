@@ -1,339 +1,661 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Eduquest — Student Dashboard</title>
-
+<title>EduNex — Student Dashboard</title>
+<meta name="description" content="Student dashboard: assignments, progress, upload, leaderboard preview." />
 <style>
-:root {
-  --bg: #f6f7fb;
-  --text: #0f172a;
-  --card: #ffffff;
-  --muted: #6b7280;
-  --accent-1: #6c63ff;
-  --accent-2: #9b6bff;
-  --accent-3: #7bd389;
-  --shadow: 0 10px 30px rgba(12,12,30,0.06);
-  --radius: 14px;
+  /* ====== Variables & Reset ====== */
+  :root{
+    --bg:#f6f7fb;
+    --card:#ffffff;
+    --muted:#6b7280;
+    --accent-1:#6c63ff;   /* purple */
+    --accent-2:#9b6bff;   /* lighter purple */
+    --accent-3:#7bd389;   /* green accent */
+    --glass: rgba(255,255,255,0.8);
+    --shadow: 0 10px 30px rgba(12,12,30,0.06);
+    --radius:14px;
+  }
+  [data-theme="dark"]{
+    --bg: #0b0b14;
+    --card: #0f1220;
+    --muted: #bfc8d6;
+    --glass: rgba(255,255,255,0.03);
+    --shadow: 0 12px 50px rgba(0,0,0,0.65);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: linear-gradient(180deg, rgba(109,84,255,0.06), rgba(255,255,255,0));
+    background-color:var(--bg);
+    color: #0f172a;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    transition:background .35s,color .35s;
+    padding:28px;
+  }
+  [data-theme="dark"] body{color: #e6eefc}
+
+  /* Container */
+  .wrap{max-width:1100px;margin:0 auto;gap:20px;display:flex;flex-direction:column}
+  .header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+  .title{display:flex;gap:14px;align-items:center}
+  .logo{
+    width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent-1),var(--accent-2));
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;box-shadow:0 8px 26px rgba(108,99,255,0.12)
+  }
+  h1{font-size:20px}
+  .subtitle{color:var(--muted);font-size:13px}
+
+  .profile{display:flex;align-items:center;gap:12px}
+  .welcome{font-size:13px;color:var(--muted);text-align:right}
+  .avatar{width:44px;height:44px;border-radius:999px;background:linear-gradient(90deg,#b58dff,#7a3cff);display:flex;align-items:center;justify-content:center;color:white;font-weight:700}
+
+  /* Progress Card */
+  .progress-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;border:1px solid rgba(0,0,0,0.03)}
+  .progress-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+  .progress-label{font-weight:700}
+  .progress-mini{color:var(--muted);font-size:13px}
+  .progress-bar-wrap{background:linear-gradient(180deg, rgba(0,0,0,0.02), transparent);height:12px;border-radius:999px;overflow:hidden;border:1px solid rgba(0,0,0,0.04)}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));box-shadow:0 6px 18px rgba(108,99,255,0.12);transition:width .9s ease-in-out}
+
+  /* ==== HEATMAP ==== */
+.heatmap-grid{
+  display:grid;
+  grid-template-columns:repeat(53,10px);
+  gap:3px;
+  justify-content:center;
+}
+.heat-cell{
+  width:10px;height:10px;border-radius:2px;
+  background:#e5e7eb;transition:background .3s;
+}
+.heat-cell[data-level="1"]{background:#bbf7d0;}
+.heat-cell[data-level="2"]{background:#4ade80;}
+.heat-cell[data-level="3"]{background:#16a34a;}
+.heat-cell[data-level="4"]{background:#166534;}
+
+/* ==== CP Platforms (cards) ==== */
+.cp-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:14px;
+  margin-top:8px;
 }
 
-[data-theme="dark"] {
-  --bg: #0b0b14;
-  --card: #131729;
-  --text: #e2e8f0;
-  --muted: #9ca3af;
-  --shadow: 0 12px 50px rgba(0,0,0,0.65);
+.cp-card{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  padding:12px;
+  border-radius:12px;
+  background:linear-gradient(180deg,var(--card), rgba(0,0,0,0.02));
+  box-shadow:var(--shadow);
+  transition:transform .25s ease, box-shadow .25s ease;
+  border:1px solid rgba(0,0,0,0.03);
+  min-height:110px;
+  overflow:hidden;
+  position:relative;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  transition: background 0.3s, color 0.3s;
+/* icon area */
+.cp-card .icon {
+  width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;
+  background:linear-gradient(135deg, rgba(108,99,255,0.12), rgba(155,107,255,0.06));
+  color:var(--accent-1);
+  font-size:18px;
 }
 
-body {
-  font-family: "Inter", sans-serif;
-  background-color: var(--bg);
-  color: var(--text);
-  padding: 30px;
+/* header row */
+.cp-card .top{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
 }
 
-.wrap {
-  max-width: 1100px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+/* platform name */
+.cp-name{font-weight:800;font-size:15px}
+
+/* small stats (e.g., solved count) */
+.cp-stats{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:13px}
+
+/* action button */
+.cp-card .open-btn{
+  margin-top:auto;
+  display:inline-block;
+  padding:8px 10px;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:700;
+  font-size:13px;
+  background:linear-gradient(90deg,var(--accent-1),var(--accent-2));
+  color:#fff;
+  box-shadow:0 10px 22px rgba(108,99,255,0.08);
+  transition:transform .18s ease, box-shadow .18s ease, opacity .18s;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* hover states */
+.cp-card:hover{
+  transform:translateY(-6px) scale(1.01);
+  box-shadow:0 14px 40px rgba(16,24,40,0.12);
+}
+.cp-card:hover .open-btn{transform:translateY(-2px);}
+
+/* small badge (e.g., "Practice") */
+.cp-badge{
+  position:absolute;right:10px;top:10px;background:rgba(255,255,255,0.9);padding:6px 8px;border-radius:999px;font-weight:700;font-size:12px;color:var(--muted);
+  box-shadow:0 6px 18px rgba(12,12,30,0.04);
 }
 
-.logo {
-  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
-  color: white;
-  font-weight: 800;
-  font-size: 18px;
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* subtle fade-in animation for cards */
+.cp-card.fade-in { animation: cpFade .45s cubic-bezier(.2,.9,.3,1) both; }
+@keyframes cpFade {
+  from { transform: translateY(8px); opacity:0; }
+  to   { transform: translateY(0); opacity:1; }
 }
 
-.profile {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+/* responsive tweaks */
+@media (max-width:560px){
+  .cp-card{min-height:120px}
+  .cp-card .icon{width:44px;height:44px}
 }
 
-.avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #b58dff, #7a3cff);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: bold;
-}
 
-.progress-card {
-  background: var(--card);
-  border-radius: var(--radius);
-  padding: 20px;
-  box-shadow: var(--shadow);
+/* ==== BADGES ==== */
+.badges-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:18px;
 }
+.badge{
+  width:100px;height:120px;
+  background:linear-gradient(180deg,var(--card),rgba(0,0,0,0.03));
+  border-radius:12px;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-weight:700;color:var(--accent-1);
+}
+.badge img{width:60px;height:60px;margin-bottom:8px;}
+.badge small{color:var(--muted);font-size:12px;text-align:center;}
 
-.progress-bar-wrap {
-  height: 10px;
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 999px;
-  overflow: hidden;
-}
+  
+  /* Stats row */
+  .stats{display:flex;gap:14px;flex-wrap:wrap;margin-top:16px}
+  .stat{flex:1;min-width:160px;background:var(--card);padding:14px;border-radius:12px;box-shadow:var(--shadow);display:flex;justify-content:space-between;align-items:center;border:1px solid rgba(0,0,0,0.03)}
+  .stat .num{font-weight:800;font-size:20px}
+  .stat .label{color:var(--muted);font-size:13px}
 
-.progress-bar {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
-  transition: width 0.6s ease-in-out;
-}
+  /* Tabs */
+  .tabs{display:flex;gap:12px;margin:22px 0}
+  .tab{padding:8px 14px;border-radius:999px;background:linear-gradient(90deg,rgba(108,99,255,0.08), rgba(0,0,0,0));color:var(--muted);cursor:pointer;border:1px solid rgba(108,99,255,0.06);font-weight:700}
+  .tab.active{background:linear-gradient(90deg,var(--accent-1),var(--accent-2));color:#fff;box-shadow:0 8px 30px rgba(108,99,255,0.12)}
 
-.stats {
-  display: flex;
-  gap: 14px;
-  margin-top: 14px;
-}
+  /* Assignments grid */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:8px}
+  .card{background:var(--card);border-radius:12px;padding:18px;box-shadow:var(--shadow);border:1px solid rgba(0,0,0,0.04)}
+  .card .head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px}
+  .card h3{margin:0;font-size:16px}
+  .meta{color:var(--muted);font-size:13px;margin:8px 0}
+  .due{font-size:13px;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+  .status{padding:6px 10px;border-radius:999px;font-weight:700;font-size:13px}
+  .status.pending{background:linear-gradient(90deg,#fff4e6, #fff4e6);color:#b45f00;border:1px solid rgba(180,95,0,0.06)}
+  .status.completed{background:linear-gradient(90deg,#edf7ef,#edf7ef);color:var(--accent-3);border:1px solid rgba(34,197,94,0.06)}
 
-.stat {
-  flex: 1;
-  background: var(--card);
-  border-radius: 12px;
-  padding: 12px;
-  box-shadow: var(--shadow);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+  .upload-wrap{margin-top:12px;display:flex;gap:10px;align-items:center}
+  .btn-upload{padding:10px 14px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));color:#fff;font-weight:700;cursor:pointer}
+  .btn-upload:active{transform:translateY(1px)}
+  .file-name{font-size:13px;color:var(--muted)}
 
-.tabs {
-  display: flex;
-  gap: 10px;
-}
+  .submitted-line{margin-top:10px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;align-items:center}
+  .submitted-line .file{color:var(--accent-3);font-weight:700}
 
-.tab {
-  padding: 8px 14px;
-  border-radius: 999px;
-  cursor: pointer;
-  font-weight: 600;
-  background: rgba(108, 99, 255, 0.1);
-  border: 1px solid rgba(108, 99, 255, 0.06);
-}
+  /* Empty state */
+  .empty{padding:26px;border-radius:12px;background:linear-gradient(180deg, rgba(0,0,0,0.02), transparent);text-align:center;color:var(--muted)}
 
-.tab.active {
-  background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
-  color: white;
-  box-shadow: 0 8px 30px rgba(108, 99, 255, 0.12);
-}
+  /* Footer small */
+  .small-footer{margin-top:24px;color:var(--muted);font-size:13px;text-align:center}
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 18px;
-}
-
-.card {
-  background: var(--card);
-  padding: 18px;
-  border-radius: 12px;
-  box-shadow: var(--shadow);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.btn-upload {
-  background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 10px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: transform 0.2s;
-}
-
-.btn-upload:hover {
-  transform: scale(1.05);
-}
-
-.status {
-  font-size: 13px;
-  font-weight: 700;
-  border-radius: 999px;
-  padding: 5px 10px;
-}
-
-.status.pending {
-  background: #fff4e6;
-  color: #b45f00;
-}
-
-.status.completed {
-  background: #e7f8ec;
-  color: #0b9444;
-}
-
-.small-footer {
-  text-align: center;
-  font-size: 13px;
-  color: var(--muted);
-  margin-top: 10px;
-}
+  /* Responsive */
+  @media (max-width:880px){
+    .grid{grid-template-columns:1fr}
+    body{padding:18px}
+  }
 </style>
 </head>
-
 <body>
-<div class="wrap">
+
+<div class="wrap" id="app">
+  <!-- HEADER -->
   <div class="header">
-    <div style="display:flex;align-items:center;gap:10px;">
+    <div class="title">
       <div class="logo">EN</div>
       <div>
-        
-        <h2>Student Dashboard</h2>
-        <p style="font-size:13px;color:var(--muted)">Assignments & Progress</p>
+        <h1>Student Dashboard</h1>
+        <div class="subtitle">Track your assignments and progress</div>
       </div>
     </div>
-    <div class="profile">
-      <div class="welcome" style="font-size:13px;color:var(--muted)">Welcome back,<br><strong>{{ request.user.username }}</strong></div>
-      <div class="avatar">{{ request.user.username|slice:":2"|upper }}</div>
-    </div>
-  </div>
-     <div style="text-align:right;margin:20px 0;">
-     <a href="{% url 'logout' %}" style="display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #e74c3c; color: white; text-decoration: none; border-radius: 5px;">
-            Logout
-        </a>
-    </div>
-  <div class="progress-card">
-    <h3>Overall Progress</h3>
-    <div class="progress-bar-wrap">
-      <div id="progBar" class="progress-bar"></div>
-    </div>
-    <div style="margin-top:10px;font-size:13px;color:var(--muted)">
-      <span id="progText">0 of 0 assignments completed</span>
-    </div>
-    <div class="stats">
-      <div class="stat"><div><strong id="numCompleted">0</strong><br>Completed</div></div>
-      <div class="stat"><div><strong id="numPending">0</strong><br>Pending</div></div>
-      <div class="stat"><div><strong id="numTotal">0</strong><br>Total</div></div>
+
+    <div class="profile" aria-hidden="true">
+      <div class="welcome">Welcome back,<br><strong>Alex Johnson</strong></div>
+      <div class="avatar">AJ</div>
     </div>
   </div>
 
-  <div class="tabs">
-    <div class="tab active" data-filter="all">All</div>
-    <div class="tab" data-filter="pending">Pending</div>
-    <div class="tab" data-filter="completed">Completed</div>
+  <!-- PROGRESS CARD -->
+  <div class="progress-card" role="region" aria-label="Overall progress">
+    <div class="progress-top">
+      <div>
+        <div class="progress-label">Overall Progress</div>
+        <div class="progress-mini" id="progText">0 of 0 assignments completed</div>
+      </div>
+      <div style="text-align:right">
+        <div style="color:var(--muted);font-size:13px">Progress</div>
+        <div style="font-weight:800;color:var(--accent-1);"> <span id="progPercent">0%</span></div>
+      </div>
+    </div>
+    <div class="progress-bar-wrap" aria-hidden="true">
+      <div class="progress-bar" id="progBar" style="width:0%"></div>
+    </div>
+
+    <div class="stats" style="margin-top:16px">
+      <div class="stat">
+        <div>
+          <div class="label">Completed</div>
+          <div class="num" id="numCompleted">0</div>
+        </div>
+        <div style="color:var(--accent-3);font-weight:700;border-radius:8px;padding:6px;background:rgba(123,211,137,0.08)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L20 6" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </div>
+
+      <div class="stat">
+        <div>
+          <div class="label">Pending</div>
+          <div class="num" id="numPending">0</div>
+        </div>
+        <div style="color:#ea580c;font-weight:700;border-radius:8px;padding:6px;background:rgba(255,234,208,0.6)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 8v4l3 3" stroke="#ea580c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </div>
+
+      <div class="stat">
+        <div>
+          <div class="label">Total</div>
+          <div class="num" id="numTotal">0</div>
+        </div>
+        <div style="color:var(--accent-1);font-weight:700;border-radius:8px;padding:6px;background:rgba(108,99,255,0.06)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="#6c63ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </div>
+    </div>
   </div>
 
-  <div class="grid" id="cardsGrid"></div>
-  <div class="small-footer">Tip: Press <b>T</b> to toggle Dark Mode 🌙</div>
+  <!-- ===== PERFORMANCE SECTION ===== -->
+<div class="performance-section" style="display:grid;gap:22px;margin-top:28px">
+
+  <!-- HEATMAP -->
+  <div class="card heatmap-card" style="padding:20px">
+    <h2 style="font-size:18px;margin-bottom:10px">Learning Activity Heatmap</h2>
+    <div id="heatmap" class="heatmap-grid"></div>
+    <p style="color:var(--muted);font-size:13px;margin-top:8px">
+      Each square shows a day of your learning streak.
+    </p>
+  </div>
+
+  <!-- ===== CP PLATFORMS SECTION ===== -->
+<div class="cp-section card" style="padding:18px; margin-top:20px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px">
+    <h2 style="margin:0;font-size:18px">Competitive Programming & Practice</h2>
+    <div style="color:var(--muted);font-size:13px">Boost your problem solving — quick links</div>
+  </div>
+
+  <div class="cp-grid" id="cpGrid" aria-live="polite">
+    <!-- JS will populate -->
+  </div>
+</div>
+
+
+  <!-- BADGES -->
+  <div class="card badges-card" style="padding:20px">
+    <h2 style="font-size:18px;margin-bottom:14px">Your Badges</h2>
+    <div id="badgesGrid" class="badges-grid"></div>
+  </div>
+
+</div>
+
+
+
+  <!-- TABS -->
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px">
+    <div class="tabs" role="tablist" aria-label="Assignment tabs">
+      <div class="tab active" data-filter="all" role="tab" tabindex="0">All <span id="allCount" style="opacity:.9;margin-left:8px;color:var(--muted)">0</span></div>
+      <div class="tab" data-filter="pending" role="tab" tabindex="0">Pending <span id="pendingCount" style="opacity:.9;margin-left:8px;color:var(--muted)">0</span></div>
+      <div class="tab" data-filter="completed" role="tab" tabindex="0">Completed <span id="completedCount" style="opacity:.9;margin-left:8px;color:var(--muted)">0</span></div>
+    </div>
+
+    <div style="margin-left:auto;color:var(--muted);font-size:13px">Sort: <select id="sortSel" style="margin-left:8px;padding:6px;border-radius:8px;border:1px solid rgba(0,0,0,0.06)"><option value="due_asc">Due Soon</option><option value="due_desc">Due Later</option></select></div>
+  </div>
+
+  <!-- ASSIGNMENTS GRID -->
+  <div class="grid" id="cardsGrid" aria-live="polite" style="margin-top:12px">
+    <!-- cards populated by JS -->
+  </div>
+
+  <div class="small-footer">Tip: Click <strong>Upload Assignment</strong> on any pending card and choose a file — the card will update to submitted.</div>
 </div>
 
 <script>
+/* ====== Sample data ====== */
 const assignments = [
-  {id:1, title:"React Components", course:"Web Dev", due:"2025-11-05", status:"pending"},
-  {id:2, title:"Database Project", course:"DBMS", due:"2025-11-02", status:"completed", submittedFile:"schema.pdf"},
-  {id:3, title:"Algorithm Report", course:"DSA", due:"2025-11-08", status:"pending"},
+  {
+    id:1,
+    title:"React Components Assignment",
+    course:"Web Development",
+    description:"Create a responsive component library",
+    due:"2025-11-05",
+    status:"pending",
+    submittedFile:null,
+    submittedAt:null
+  },
+  {
+    id:2,
+    title:"Database Design Project",
+    course:"Database Systems",
+    description:"Design a normalized database schema",
+    due:"2025-11-02",
+    status:"completed",
+    submittedFile:"database_schema.pdf",
+    submittedAt:"2025-10-28"
+  },
+  {
+    id:3,
+    title:"Algorithm Analysis Report",
+    course:"Data Structures",
+    description:"Analyze time complexity of sorting algorithms",
+    due:"2025-11-08",
+    status:"pending",
+    submittedFile:null,
+    submittedAt:null
+  },
+  {
+    id:4,
+    title:"UI/UX Case Study",
+    course:"Design Principles",
+    description:"Complete user experience analysis",
+    due:"2025-10-30",
+    status:"completed",
+    submittedFile:"ux_case_study.pdf",
+    submittedAt:"2025-10-29"
+  }
 ];
 
+/* ====== Utilities ====== */
 const byId = id => document.getElementById(id);
+const formatDate = (iso) => {
+  if(!iso) return "";
+  const d=new Date(iso);
+  const dd = String(d.getDate()).padStart(2,'0');
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const yy = d.getFullYear();
+  return dd + '/' + mm + '/' + yy;
+};
 
-function updateStats(){
-  const total = assignments.length;
-  const completed = assignments.filter(a=>a.status==="completed").length;
-  const pending = total - completed;
-  byId("numCompleted").textContent = completed;
-  byId("numPending").textContent = pending;
-  byId("numTotal").textContent = total;
-  const percent = total===0?0:Math.round((completed/total)*100);
-  byId("progBar").style.width = percent+"%";
-  byId("progText").textContent = `${completed} of ${total} assignments completed`;
-}
+/* ====== Render UI ====== */
+function renderCards(filter='all', sort='due_asc'){
+  const grid = byId('cardsGrid');
+  grid.innerHTML = '';
+  let list = assignments.slice();
 
-function renderCards(filter="all"){
-  const grid = byId("cardsGrid");
-  grid.innerHTML = "";
-  const filtered = filter==="all"?assignments:assignments.filter(a=>a.status===filter);
+  // sort by due date
+  list.sort((a,b)=>{
+    const pa = new Date(a.due), pb = new Date(b.due);
+    return sort === 'due_asc' ? pa - pb : pb - pa;
+  });
 
-  if(filtered.length===0){
-    grid.innerHTML = `<div class='card'>No assignments found.</div>`;
+  // filter
+  const filtered = list.filter(a => filter==='all' ? true : (a.status===filter));
+  if(filtered.length === 0){
+    grid.innerHTML = '<div class="card empty">No assignments in this view.</div>';
     return;
   }
 
   filtered.forEach(a=>{
-    const card = document.createElement("div");
-    card.className = "card";
+    const card = document.createElement('article');
+    card.className = 'card reveal';
     card.innerHTML = `
-      <div>
-        <h3>${a.title}</h3>
-        <p style="font-size:13px;color:var(--muted)">${a.course}</p>
+      <div class="head">
+        <div>
+          <h3>${a.title}</h3>
+          <div class="meta">${a.course} • ${a.description}</div>
+        </div>
+        <div>
+          <div class="status ${a.status==="pending" ? "pending" : "completed"}">${a.status.charAt(0).toUpperCase()+a.status.slice(1)}</div>
+        </div>
       </div>
-      <div>
-        <p style="font-size:13px;color:var(--muted)">Due: ${a.due}</p>
-        <div class="status ${a.status}">${a.status}</div>
+      <div class="due">
+        <div>Due: <strong>${formatDate(a.due)}</strong></div>
+        <div style="font-size:13px;color:var(--muted)">${a.status==="completed" ? 'Submitted: ' + formatDate(a.submittedAt) : ''}</div>
       </div>
-      ${a.status==="pending"
-        ? `<button class="btn-upload" data-id="${a.id}">Upload Assignment</button>`
-        : `<p style="font-size:13px;color:var(--muted)">File: <b>${a.submittedFile}</b></p>`}
+      ${ a.status === "pending" ? 
+        `<div class="upload-wrap">
+           <button class="btn-upload" data-id="${a.id}">Upload Assignment</button>
+           <div class="file-name" id="fn-${a.id}">No file chosen</div>
+         </div>` :
+        `<div class="submitted-line"><div>Submitted file: <span class="file">${a.submittedFile}</span></div><div>${formatDate(a.submittedAt)}</div></div>`
+      }
     `;
     grid.appendChild(card);
   });
 
-  document.querySelectorAll(".btn-upload").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      const input = document.createElement("input");
-      input.type = "file";
-      input.accept = ".pdf,.doc,.docx,.zip,.txt,image/*";
-      input.onchange = e=>{
-        const file = e.target.files[0];
-        if(!file) return;
-        const id = parseInt(btn.getAttribute("data-id"));
-        const idx = assignments.findIndex(a=>a.id===id);
-        assignments[idx].status = "completed";
-        assignments[idx].submittedFile = file.name;
-        updateStats();
-        renderCards(filter);
-      };
-      input.click(); // open file picker
+  // attach upload handlers
+  document.querySelectorAll('.btn-upload').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      const id = parseInt(btn.getAttribute('data-id'),10);
+      openFilePicker(id);
     });
   });
+
+  // reveal anim (simple)
+  requestAnimationFrame(()=> document.querySelectorAll('.reveal').forEach((el,i)=>setTimeout(()=>el.classList.add('show'), 80*i)));
 }
 
-document.querySelectorAll(".tab").forEach(tab=>{
-  tab.addEventListener("click",()=>{
-    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-    tab.classList.add("active");
-    renderCards(tab.getAttribute("data-filter"));
-  });
-});
+/* ====== Counters & Progress ====== */
+function updateStats(){
+  const total = assignments.length;
+  const completed = assignments.filter(a=>a.status==='completed').length;
+  const pending = total - completed;
+  byId('numTotal').textContent = total;
+  byId('numCompleted').textContent = completed;
+  byId('numPending').textContent = pending;
+  byId('allCount').textContent = total;
+  byId('pendingCount').textContent = pending;
+  byId('completedCount').textContent = completed;
 
-window.addEventListener("keydown",(e)=>{
-  if(e.key.toLowerCase()==='t'){
-    const html=document.documentElement;
-    const dark=html.getAttribute("data-theme")==="dark";
-    html.setAttribute("data-theme",dark?"light":"dark");
+  // progress percent
+  const percent = total === 0 ? 0 : Math.round((completed/total)*100);
+  byId('progPercent').textContent = percent + '%';
+  byId('progBar').style.width = percent + '%';
+  byId('progText').textContent = `${completed} of ${total} assignments completed`;
+}
+
+/* ====== File picker / upload (UI only) ====== */
+function openFilePicker(assignId){
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.pdf,.doc,.docx,.zip,.txt,image/*';
+  input.onchange = (ev)=>{
+    const file = ev.target.files[0];
+    if(!file) return;
+    // update assignment state (simulate upload)
+    const idx = assignments.findIndex(a => a.id === assignId);
+    if(idx >= 0){
+      assignments[idx].status = 'completed';
+      assignments[idx].submittedFile = file.name;
+      assignments[idx].submittedAt = new Date().toISOString().slice(0,10);
+      // re-render
+      updateStats();
+      const currentFilter = document.querySelector('.tab.active').getAttribute('data-filter');
+      const sort = document.getElementById('sortSel').value;
+      renderCards(currentFilter, sort);
+    }
+  };
+  input.click();
+}
+
+/* ====== Tabs & Sort handlers ====== */
+document.addEventListener('click', function(e){
+  const t = e.target;
+  if(t.classList && t.classList.contains('tab')){
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    const filter = t.getAttribute('data-filter');
+    const sort = document.getElementById('sortSel').value;
+    renderCards(filter, sort);
   }
 });
 
+document.getElementById('sortSel').addEventListener('change', ()=>{
+  const filter = document.querySelector('.tab.active').getAttribute('data-filter');
+  renderCards(filter, document.getElementById('sortSel').value);
+});
+
+/* ====== Init ====== */
 updateStats();
-renderCards();
+renderCards('all','due_asc');
+
+/* ====== Optional: theme toggle via T key (for demo) ====== */
+window.addEventListener('keydown',(e)=>{
+  if(e.key.toLowerCase()==='t'){
+    const html = document.documentElement;
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  }
+});
+/* ====== Heatmap + Badges Demo ====== */
+
+// Generate mock activity (past 365 days)
+function renderHeatmap() {
+  const container = document.getElementById("heatmap");
+  const days = 365;
+  const today = new Date();
+  container.innerHTML = "";
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const cell = document.createElement("div");
+    cell.className = "heat-cell";
+ 
+    // random level for demo
+    const lvl = Math.random() < 0.2 ? 0 :
+                Math.random() < 0.5 ? 1 :
+                Math.random() < 0.8 ? 2 :
+                Math.random() < 0.95 ? 3 : 4;
+    if (lvl > 0) cell.dataset.level = lvl;
+    container.appendChild(cell);
+  }
+}
+
+// Badges (you can replace icons later)
+const badges = [
+  {days:10, img:"https://cdn-icons-png.flaticon.com/512/190/190411.png"},
+  {days:50, img:"https://cdn-icons-png.flaticon.com/512/190/190411.png"},
+  {days:100, img:"https://cdn-icons-png.flaticon.com/512/190/190411.png"},
+  {days:200, img:"https://cdn-icons-png.flaticon.com/512/190/190411.png"},
+  {days:500, img:"https://cdn-icons-png.flaticon.com/512/190/190411.png"},
+  {days:1000, img:"https://cdn-icons-png.flaticon.com/512/190/190411.png"},
+];
+
+function renderBadges() {
+  const grid = document.getElementById("badgesGrid");
+  badges.forEach(b => {
+    const div = document.createElement("div");
+    div.className = "badge";
+    div.innerHTML = `
+      <img src="${b.img}" alt="Badge ${b.days} days">
+      <div>${b.days} Days</div>
+      <small>Achievement</small>
+    `;
+    grid.appendChild(div);
+  });
+}
+
+/* ====== CP PLATFORMS LINKS (populate section) ====== */
+const cpPlatforms = [
+  {
+    id: "leetcode",
+    name: "LeetCode",
+    url: "https://leetcode.com",
+    iconText: "LC",
+    hint: "Practice algorithm & interview problems",
+    solved: 128
+  },
+  {
+    id: "codeforces",
+    name: "Codeforces",
+    url: "https://codeforces.com",
+    iconText: "CF",
+    hint: "Timed contests & upsolving",
+    solved: 42
+  },
+  {
+    id: "hackerrank",
+    name: "HackerRank",
+    url: "https://www.hackerrank.com",
+    iconText: "HR",
+    hint: "Problem tracks & competitions",
+    solved: 76
+  },
+  {
+    id: "codechef",
+    name: "CodeChef",
+    url: "https://www.codechef.com",
+    iconText: "CC",
+    hint: "Long/short contests & practice",
+    solved: 54
+  },
+  {
+    id: "gfg",
+    name: "GeeksforGeeks",
+    url: "https://www.geeksforgeeks.org",
+    iconText: "GfG",
+    hint: "Theory, practice and articles",
+    solved: 210
+  }
+];
+
+function renderCPGrid() {
+  const grid = document.getElementById('cpGrid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  cpPlatforms.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'cp-card fade-in';
+    div.style.animationDelay = (i * 0.06) + 's';
+
+    div.innerHTML = `
+      <div class="cp-badge">Practice</div>
+      <div class="top">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="icon" aria-hidden="true">${p.iconText}</div>
+          <div>
+            <div class="cp-name">${p.name}</div>
+            <div style="color:var(--muted);font-size:13px">${p.hint}</div>
+          </div>
+        </div>
+        <div class="cp-stats">
+          <div style="display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${p.solved}</div>
+        </div>
+      </div>
+
+      <a class="open-btn" href="${p.url}" target="_blank" rel="noopener noreferrer">Open ${p.name}</a>
+    `;
+
+    grid.appendChild(div);
+  });
+}
+
+// call to populate
+renderCPGrid();
+
+
+// initialize
+renderHeatmap();
+renderBadges();
+
 </script>
 </body>
 </html>

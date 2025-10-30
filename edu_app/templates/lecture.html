@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduQuest — Lecture & Notes Upload</title>
+<style>
+  :root {
+    --bg: #f6f7fb;
+    --card: #ffffff;
+    --text: #0f172a;
+    --muted: #6b7280;
+    --accent: #6d28d9;
+    --accent-light: #ede9fe;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  header {
+    background: var(--accent);
+    color: white;
+    text-align: center;
+    padding: 1.3rem 0;
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    animation: slideDown 0.8s ease-in-out;
+  }
+
+  @keyframes slideDown {
+    from { transform: translateY(-40px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 2rem auto;
+  }
+
+  .upload-section {
+    background: var(--card);
+    padding: 1.5rem 2rem;
+    border-radius: 18px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+    margin-bottom: 2.5rem;
+    transition: all 0.3s ease;
+    animation: fadeIn 0.8s ease forwards;
+  }
+
+  .upload-section:hover {
+    transform: scale(1.01);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  h2 {
+    margin-bottom: 1rem;
+    color: var(--accent);
+  }
+
+  input, textarea, button {
+    width: 100%;
+    margin: 0.5rem 0;
+    padding: 0.8rem;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.2s ease;
+  }
+
+  input:focus, textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 6px rgba(109, 40, 217, 0.3);
+  }
+
+  button {
+    background: var(--accent);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+  }
+
+  button:hover {
+    background: #5b21b6;
+    transform: scale(1.03);
+  }
+
+  .lecture-list {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    animation: fadeIn 1s ease;
+  }
+
+  .lecture-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    transition: all 0.3s ease;
+  }
+
+  .lecture-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+  }
+
+  iframe {
+    width: 100%;
+    height: 250px;
+    border-radius: 10px;
+    margin-bottom: 0.8rem;
+  }
+
+  .note-link {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    margin-top: 0.5rem;
+  }
+
+  .note-link:hover {
+    background: #5b21b6;
+  }
+
+  .section-title {
+    text-align: center;
+    font-size: 1.4rem;
+    margin: 2.5rem 0 1.5rem;
+    font-weight: 600;
+    color: var(--text);
+    position: relative;
+  }
+
+  .section-title::after {
+    content: "";
+    display: block;
+    width: 70px;
+    height: 4px;
+    background: var(--accent);
+    margin: 0.6rem auto 0;
+    border-radius: 10px;
+  }
+</style>
+</head>
+<body>
+
+  <header>🎓 Lecture & Notes Upload Portal</header>
+
+  <div class="container">
+    <!-- Lecture Upload Section -->
+    <div class="upload-section" id="lectureUpload">
+      <h2>🎥 Upload Lecture</h2>
+      <input type="text" id="lectureTitle" placeholder="Lecture Title">
+      <textarea id="lectureDesc" placeholder="Lecture Description"></textarea>
+      <input type="text" id="youtubeLink" placeholder="YouTube Video Link">
+      <button onclick="addLecture()">Add Lecture</button>
+    </div>
+
+    <!-- Notes Upload Section -->
+    <div class="upload-section" id="notesUpload">
+      <h2>📘 Upload Notes</h2>
+      <input type="text" id="notesTitle" placeholder="Notes Title">
+      <textarea id="notesDesc" placeholder="Short Description"></textarea>
+      <input type="file" id="notesFile" accept="application/pdf">
+      <button onclick="addNotes()">Add Notes</button>
+    </div>
+
+    <h3 class="section-title">📚 Lecture Library</h3>
+    <div class="lecture-list" id="lectureList"></div>
+  </div>
+
+<script>
+  function extractYouTubeID(url) {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  }
+
+  const lectureList = document.getElementById("lectureList");
+
+  function addLecture() {
+    const title = document.getElementById("lectureTitle").value;
+    const desc = document.getElementById("lectureDesc").value;
+    const link = document.getElementById("youtubeLink").value;
+
+    if (!title || !link) {
+      alert("Please enter Lecture Title and YouTube Link!");
+      return;
+    }
+
+    const videoID = extractYouTubeID(link);
+    if (!videoID) {
+      alert("Invalid YouTube link!");
+      return;
+    }
+
+    const card = document.createElement("div");
+    card.className = "lecture-card";
+
+    card.innerHTML = `
+      <iframe src="https://www.youtube.com/embed/${videoID}" allowfullscreen></iframe>
+      <h3>${title}</h3>
+      <p>${desc}</p>
+    `;
+
+    lectureList.appendChild(card);
+    document.getElementById("lectureTitle").value = "";
+    document.getElementById("lectureDesc").value = "";
+    document.getElementById("youtubeLink").value = "";
+  }
+
+  function addNotes() {
+    const title = document.getElementById("notesTitle").value;
+    const desc = document.getElementById("notesDesc").value;
+    const file = document.getElementById("notesFile").files[0];
+
+    if (!title || !file) {
+      alert("Please add Notes Title and choose a file!");
+      return;
+    }
+
+    const card = document.createElement("div");
+    card.className = "lecture-card";
+
+    card.innerHTML = `
+      <h3>${title}</h3>
+      <p>${desc}</p>
+      <a href="${URL.createObjectURL(file)}" target="_blank" class="note-link">📄 View Notes</a>
+    `;
+
+    lectureList.appendChild(card);
+    document.getElementById("notesTitle").value = "";
+    document.getElementById("notesDesc").value = "";
+    document.getElementById("notesFile").value = "";
+  }
+</script>
+</body>
+</html>
