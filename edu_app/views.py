@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-
+from django.contrib import messages
 
 @login_required(login_url='login')
 def dashboard(request):
@@ -57,23 +57,28 @@ def home(request):
 
 def signup_teacher(request):
     if request.method == 'POST':
-        uname = request.POST.get('username')
-        email = request.POST.get('email')
-        pass1 = request.POST.get('password1')
-        pass2 = request.POST.get('password2')
+        username = request.POST.get('username')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        
+        if password1 != password2:
+            messages.error(request, "Passwords do not match.")
+            return render(request, 'signup_teacher.html')
 
-        if pass1 != pass2:
-            return HttpResponse("Passwords do not match")
+        # ✅ Check if username already exists
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username already taken. Try another one.")
+            return render(request, 'signup_teacher.html')
 
-        if User.objects.filter(username=uname).exists():
-            return HttpResponse("Username already taken")
+        # ✅ If not exists, create new user
+        user = User.objects.create_user(username=username, password=password1)
+        user.save()
 
-        my_user = User.objects.create_user(username=uname, email=email, password=pass1)
-        my_user.save()
+        messages.success(request, "Teacher account created successfully.")
         return redirect('login_teacher')
 
-    # Render signup form for GET requests
     return render(request, 'signup_teacher.html')
+
 
 def login_teacher(request):
     if request.method == 'POST':
@@ -95,3 +100,14 @@ def login_teacher(request):
 @login_required(login_url='login_teacher')
 def dashboard_teacher(request):
     return render(request, 'dashboard_teacher.html')
+    
+@login_required(login_url='login_teacher')
+def dashboard_teacher(request):
+    return render(request, 'dashboard_teacher.html')
+
+
+def leaderboard(request):
+    return render(request, 'leaderboard.html')
+
+def lecture(request):
+    return render(request, 'lecture.html')

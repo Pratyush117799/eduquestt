@@ -162,9 +162,14 @@
     margin: 0.6rem auto 0;
     border-radius: 10px;
   }
+  /* Dark theme overrides */
+  html[data-theme="dark"] body{background:#0b0f1a;color:#eaf3ff}
+  html[data-theme="dark"] .upload-section, html[data-theme="dark"] .lecture-card{background:#0f1620;color:#eaf3ff}
+  html[data-theme="dark"] header{background:#0f1620}
 </style>
 </head>
 <body>
+  <button id="themeToggle" style="position:fixed;right:16px;top:16px;padding:8px 10px;border-radius:10px;border:none;background:#00000022;color:#fff;cursor:pointer;z-index:1200">☀</button>
 
   <header>🎓 Lecture & Notes Upload Portal</header>
 
@@ -255,6 +260,13 @@
     document.getElementById("notesDesc").value = "";
     document.getElementById("notesFile").value = "";
   }
+</script>
+<script>
+  // Persistent theme toggle
+  (function(){
+    const html=document.documentElement;const saved=localStorage.getItem('eduquest-theme')||'dark';html.setAttribute('data-theme',saved);
+    const btn=document.getElementById('themeToggle'); if(btn){btn.addEventListener('click',()=>{const cur=html.getAttribute('data-theme')==='dark'?'light':'dark';html.setAttribute('data-theme',cur);localStorage.setItem('eduquest-theme',cur);});}
+  })();
 </script>
 </body>
 </html>

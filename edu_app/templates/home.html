@@ -506,9 +506,10 @@
 <nav id="sidebar-nav" class="sidebar-nav" aria-label="Main Sidebar Navigation">
   <a href="#ai-feedback" title="AI Feedback & Assistance">🤖 AI Feedback</a>
   <a href="#schedule" title="Schedule">📅 Schedule</a>
-  <a href="#leaderboard" title="Leaderboard">🏆 Leaderboard</a>
+  <a href="{% url 'leaderboard' %}" title="Leaderboard">🏆 Leaderboard</a>
   <a href="{% url 'login' %}" title="Student Login">🎓 Student Login</a>
   <a href="{% url 'login_teacher' %}" title="Teacher Login">🧑‍🏫 Teacher Login</a>
+  <a href="{% url 'dashboard_teacher' %}" title="Teacher Dashboard">🧑‍🏫 Dashboard</a>
   <a href="#practice" title="Practice">📝 Practice</a>
   <a href="#lectures" title="Watch Lectures">🎥 Lectures</a>
   <a href="#about" title="About">ℹ️ About</a>
@@ -752,7 +753,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         <div class="big-panel" style="text-align: center;">
           <div style="font-size:22px;font-weight:800;color:var(--accent-2)">Leaderboard</div>
           <div style="color:var(--muted);margin-top:8px">See top students and performance trends.</div>
-          <div style="margin-top:14px"><a class="btn primary" href="leaderboard.html">View Full Leaderboard</a></div>
+          <div style="margin-top:14px"><a class="btn primary" href="{% url 'leaderboard' %}">View Full Leaderboard</a></div>
         </div>
       </div>
     </div>
@@ -873,7 +874,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       <ul style="list-style:none;padding:0;color:var(--muted); line-height: 2;">
         <li><a href="#home" style="color:var(--muted);text-decoration:none">Home</a></li>
         <li><a href="#features" style="color:var(--muted);text-decoration:none">Features</a></li>
-        <li><a href="leaderboard.html" style="color:var(--muted);text-decoration:none">Leaderboard</a></li>
+        <li><a href="{% url 'leaderboard' %}" style="color:var(--muted);text-decoration:none">Leaderboard</a></li>
         <li><a href="analytics.html" style="color:var(--muted);text-decoration:none">Analytics</a></li>
         <li><a href="login.html" style="color:var(--muted);text-decoration:none">Login</a></li>
         <li><a href="register.html" style="color:var(--muted);text-decoration:none">Register</a></li>
