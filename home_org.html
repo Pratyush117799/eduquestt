@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;">
+    <div style="text-align: center; background: white; padding: 50px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+        <h1 style="color: #333;">Welcome to My Django App</h1>
+        <p style="color: #666; margin-bottom: 30px;">Please choose an option below to continue:</p>
+
+        <div style="display: flex; justify-content: center; gap: 20px;">
+            <a href="{% url 'signup' %}" 
+               style="padding: 12px 25px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px; font-size: 16px;">
+                Register as Student
+            </a>
+            
+            <a href="{% url 'login' %}" 
+               style="padding: 12px 25px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-size: 16px;">
+                Login as Student
+
+            </a>
+             <a href="{% url 'signup_teacher' %}" 
+               style="padding: 12px 25px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px; font-size: 16px;">
+                Register as Teacher
+            </a>
+
+            <a href="{% url 'login_teacher' %}" 
+               style="padding: 12px 25px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-size: 16px;">
+                Login as Teacher
+
+            </a>
+             
+        </div>
+    </div>
+</body>
+</html>

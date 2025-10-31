@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f0f4f8; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;">
+    <div style="background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; width: 400px;">
+        <h2 style="color: #333;">Welcome, {{ request.user.username }}!</h2>
+        <p style="color: #666;">You are successfully logged in.</p>
+        <a href="{% url 'logout' %}" style="display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #e74c3c; color: white; text-decoration: none; border-radius: 5px;">
+            Logout
+        </a>
+    </div>
+</body>
+</html>

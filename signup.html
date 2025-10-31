@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up</title>
+</head>
+<body style="
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #6a5acd, #00d4ff);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+">
+    <div style="
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(15px);
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        width: 370px;
+        color: white;
+        animation: fadeIn 1s ease;
+    ">
+        <h2 style="text-align: center; margin-bottom: 20px; letter-spacing: 1px;">🧑‍🚀 Create Account</h2>
+
+        <form method="POST" style="display: flex; flex-direction: column;">
+            {% csrf_token %}
+
+            <label style="margin-top: 10px; font-weight: 500;">Username</label>
+            <input type="text" name="username" required 
+                style="padding: 10px; border: none; border-radius: 6px; 
+                       outline: none; margin-top: 5px;
+                       transition: 0.3s; background: rgba(255,255,255,0.8);">
+
+            <label style="margin-top: 15px; font-weight: 500;">Email</label>
+            <input type="email" name="email" required 
+                style="padding: 10px; border: none; border-radius: 6px; 
+                       outline: none; margin-top: 5px;
+                       transition: 0.3s; background: rgba(255,255,255,0.8);">
+
+            <label style="margin-top: 15px; font-weight: 500;">Password</label>
+            <input type="password" name="password1" required 
+                style="padding: 10px; border: none; border-radius: 6px; 
+                       outline: none; margin-top: 5px;
+                       transition: 0.3s; background: rgba(255,255,255,0.8);">
+
+            <label style="margin-top: 15px; font-weight: 500;">Confirm Password</label>
+            <input type="password" name="password2" required 
+                style="padding: 10px; border: none; border-radius: 6px; 
+                       outline: none; margin-top: 5px;
+                       transition: 0.3s; background: rgba(255,255,255,0.8);">
+
+            <button type="submit" 
+                style="margin-top: 25px; padding: 12px; border: none; border-radius: 8px;
+                       background: linear-gradient(270deg,#4caf50,#00d4ff);
+                       color: white; font-size: 16px; font-weight: 600;
+                       cursor: pointer; transition: all 0.3s ease; letter-spacing: 0.5px;"
+                onmouseover="this.style.transform='scale(1.08)'; this.style.boxShadow='0 0 15px rgba(76,175,80,0.6)'"
+                onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'">
+                🌟 Sign Up
+            </button>
+        </form>
+
+        <p style="text-align: center; margin-top: 15px; font-size: 14px;">
+            Already have an account? 
+            <a href="{% url 'login' %}" style="color:#fff; text-decoration:none; font-weight:600;"
+               onmouseover="this.style.textDecoration='underline'">Login here</a>
+        </p>
+    </div>
+
+    <!-- Keyframes + Input Glow -->
+    <style>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    input:focus {
+      box-shadow: 0 0 8px rgba(76,175,80,0.6);
+      background: white !important;
+    }
+    </style>
+</body>
+</html>
+<!-- Theme toggle (persistent) -->
+<script>
+  (function(){const html=document.documentElement;const saved=localStorage.getItem('eduquest-theme')||'dark';html.setAttribute('data-theme',saved);})();
+</script>
+<style>
+  #themeToggle{position:fixed;right:16px;top:16px;padding:8px 10px;border-radius:10px;border:none;background:#00000022;color:#fff;cursor:pointer}
+  html[data-theme="dark"] body{background:#0b0f1a !important;color:#eaf3ff !important}
+</style>
+<button id="themeToggle" onclick="(function(){const h=document.documentElement;const cur=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',cur);localStorage.setItem('eduquest-theme',cur);})();">☀</button>
